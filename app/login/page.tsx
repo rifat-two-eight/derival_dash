@@ -22,7 +22,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center p-4">
+    <div className="min-h-screen w-full relative flex items-center justify-center p-4 font-sans">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
