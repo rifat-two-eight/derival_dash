@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -15,6 +15,7 @@ import {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -25,6 +26,10 @@ export function Sidebar() {
     { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
+
+  const handleLogout = () => {
+    router.push("/login");
+  };
 
   return (
     <aside className="w-64 bg-[#1A227F] h-screen flex flex-col fixed left-0 top-0 text-white z-20">
@@ -57,7 +62,10 @@ export function Sidebar() {
 
       {/* Logout */}
       <div className="p-4 border-t border-white rounded-l-4xl">
-        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors text-sm">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors text-sm"
+        >
           <LogOut className="w-5 h-5 shrink-0" />
           <span>Logout</span>
         </button>

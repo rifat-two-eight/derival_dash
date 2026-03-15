@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Mail, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push("/dashboard");
+  };
 
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4">
@@ -38,7 +45,7 @@ export default function LoginPage() {
 
 
         {/* Form */}
-        <form className="w-[90%] space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="w-[90%] space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-600 text-sm font-normal">
