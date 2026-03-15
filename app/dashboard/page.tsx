@@ -13,9 +13,9 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: 'JAN', revenue: 1000 },
-  { name: 'FEB', revenue: 1200 },
-  { name: 'MAR', revenue: 1050 },
+  { name: 'JAN', revenue: 3500 },
+  { name: 'FEB', revenue: 3800 },
+  { name: 'MAR', revenue: 3200 },
   { name: 'APR', revenue: 2000 },
   { name: 'MAY', revenue: 3200 },
   { name: 'JUN', revenue: 2800 },
@@ -111,13 +111,13 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Monthly Revenue Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50">
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm">
           <div className="flex justify-between items-start mb-6">
             <div>
               <p className="text-gray-500 text-sm font-medium mb-1">Monthly Revenue</p>
               <div className="flex items-baseline gap-2">
                 <h3 className="text-2xl font-bold text-gray-900">$12.7k</h3>
-                <span className="text-xs font-medium text-emerald-500">↑ 1.3% VS LAST MOTH</span>
+                <span className="text-xs font-medium text-emerald-500">↑ 1.3%</span>
               </div>
             </div>
             <select className="bg-gray-50 border-none text-xs font-medium text-gray-500 rounded-lg px-3 py-1.5 focus:ring-0 cursor-pointer">
