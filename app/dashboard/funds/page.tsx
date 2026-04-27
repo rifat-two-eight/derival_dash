@@ -32,21 +32,18 @@ export default function FundsPage() {
         <StatCard 
           title="Total Funds" 
           value="$1,000" 
-          subtitle="+12% from last month"
           icon={<DollarSign className="w-5 h-5 text-emerald-600" />}
           color="emerald"
         />
         <StatCard 
           title="Pending Funds" 
           value="$200" 
-          subtitle="1 pending payments"
           icon={<Clock className="w-5 h-5 text-orange-500" />}
           color="orange"
         />
         <StatCard 
           title="Monthly Inflow" 
           value="$15,000" 
-          subtitle="Average contribution rate"
           icon={<TrendingUp className="w-5 h-5 text-indigo-600" />}
           color="indigo"
         />
@@ -138,7 +135,7 @@ export default function FundsPage() {
   );
 }
 
-function StatCard({ title, value, subtitle, icon, color }: { title: string; value: string; subtitle: string; icon: React.ReactNode; color: "emerald" | "orange" | "indigo" }) {
+function StatCard({ title, value, icon, color }: { title: string; value: string; icon: React.ReactNode; color: "emerald" | "orange" | "indigo" }) {
   const bgColors = {
     emerald: "bg-emerald-50",
     orange: "bg-orange-50",
@@ -146,8 +143,8 @@ function StatCard({ title, value, subtitle, icon, color }: { title: string; valu
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 flex flex-col justify-between h-40">
-      <div className="flex gap-4">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50 flex flex-col justify-center h-32">
+      <div className="flex gap-4 items-center">
         <div className={`${bgColors[color]} w-12 h-12 rounded-xl flex items-center justify-center shrink-0`}>
           {icon}
         </div>
@@ -156,9 +153,6 @@ function StatCard({ title, value, subtitle, icon, color }: { title: string; valu
           <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
         </div>
       </div>
-      <p className={`text-xs ${color === 'emerald' ? 'text-emerald-500 font-medium' : 'text-gray-400'}`}>
-        {subtitle}
-      </p>
     </div>
   );
 }

@@ -1,50 +1,102 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { 
   Search, 
   MoreHorizontal, 
   Download, 
   ChevronLeft, 
   ChevronRight,
-  UserCheck,
-  Clock,
-  UserX,
-  Users as UsersIcon
+  Loader2
 } from "lucide-react";
+import { getUsers, updateUserStatus } from "@/lib/api-auth";
+import { toast } from "sonner";
 
-// Mock Data
-const MOCK_USERS = [
-  { id: 1, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 4, contributions: 7654, status: "Active", joined: "2026-01-15" },
-  { id: 2, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 7, contributions: 7654, status: "Blocked", joined: "2026-01-15" },
-  { id: 3, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 3, contributions: 7654, status: "Active", joined: "2026-01-15" },
-  { id: 4, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 5, contributions: 7654, status: "Active", joined: "2026-01-15" },
-  { id: 5, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 9, contributions: 7654, status: "Blocked", joined: "2026-01-15" },
-  { id: 6, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 1, contributions: 7654, status: "Active", joined: "2026-01-15" },
-  { id: 7, name: "John Doe", email: "ibrahim1@gmail.com", phone: "+880 1745630673", groups: 3, contributions: 7654, status: "Active", joined: "2026-01-15" },
-  { id: 8, name: "Jane Smith", email: "jane@example.com", phone: "+880 111222333", groups: 2, contributions: 1200, status: "Pending", joined: "2026-02-10" },
-];
+interface User {
+  _id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  status: string;
+  createdAt: string;
+  role: string;
+  profileImage?: string;
+}
+
+interface Meta {
+  page: number;
+  limit: number;
+  total: number;
+}
 
 export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("All");
-  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [meta, setMeta] = useState<Meta>({ page: 1, limit: 10, total: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, active: 0, pending: 0, suspended: 0 });
 
-  const filteredUsers = useMemo(() => {
-    return MOCK_USERS.filter((user) => {
-      const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           user.email.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesTab = activeTab === "All" || user.status === activeTab;
-      return matchesSearch && matchesTab;
-    });
-  }, [searchQuery, activeTab]);
+  const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const params = {
+        page: meta.page,
+        limit: meta.limit,
+        status: activeTab === "All" ? undefined : activeTab.toLowerCase(),
+        search: searchQuery || undefined,
+      };
+      const response = await getUsers(params);
+      if (response.success) {
+        setUsers(response.data.data);
+        setMeta(response.data.meta);
+        
+        // Mock stats calculation since API might not provide full stats in this endpoint
+        // In a real app, you might have a separate stats endpoint
+        setStats({
+          total: response.data.meta.total,
+          active: response.data.data.filter((u: User) => u.status === "active").length,
+          pending: response.data.data.filter((u: User) => u.status === "pending").length,
+          suspended: response.data.data.filter((u: User) => u.status === "suspended").length,
+        });
+      }
+    } catch (error: any) {
+      console.error("Fetch users error:", error);
+      toast.error(error.response?.data?.message || "Failed to fetch users");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [meta.page, meta.limit, activeTab, searchQuery]);
 
-  const stats = {
-    total: MOCK_USERS.length,
-    active: MOCK_USERS.filter(u => u.status === "Active").length,
-    pending: MOCK_USERS.filter(u => u.status === "Pending").length,
-    blocked: MOCK_USERS.filter(u => u.status === "Blocked").length,
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchUsers();
+    }, 500); // Debounce search
+    return () => clearTimeout(timer);
+  }, [fetchUsers]);
+
+  const handlePageChange = (newPage: number) => {
+    setMeta(prev => ({ ...prev, page: newPage }));
   };
+
+  const handleStatusUpdate = async (userId: string, newStatus: string) => {
+    try {
+      const response = await updateUserStatus(userId, newStatus);
+      if (response.success) {
+        toast.success(response.message || `User status updated to ${newStatus}`);
+        setOpenMenuId(null);
+        fetchUsers(); // Refresh the list
+      } else {
+        toast.error(response.message || "Failed to update status");
+      }
+    } catch (error: any) {
+      console.error("Status update error:", error);
+      toast.error(error.response?.data?.message || "Something went wrong while updating status");
+    }
+  };
+
+  const totalPages = Math.ceil(meta.total / meta.limit);
 
   return (
     <div className="space-y-6">
@@ -53,7 +105,7 @@ export default function UsersPage() {
         <StatCard title="Total Users" value={stats.total} color="indigo" />
         <StatCard title="Active" value={stats.active} color="emerald" />
         <StatCard title="Pending" value={stats.pending} color="orange" />
-        <StatCard title="Blocked" value={stats.blocked} color="red" />
+        <StatCard title="Suspended" value={stats.suspended} color="red" />
       </div>
 
       {/* Main Unified Card */}
@@ -71,7 +123,7 @@ export default function UsersPage() {
             />
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-            {["All", "Active", "Pending", "Blocked"].map((tab) => (
+            {["All", "Active", "Pending", "Suspended"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -92,79 +144,108 @@ export default function UsersPage() {
         </div>
 
         {/* Users Table */}
-        <div className="overflow-x-auto border border-gray-100 rounded-xl">
+        <div className="overflow-x-auto border border-gray-100 rounded-xl min-h-[400px] relative">
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 text-[#1A2279] animate-spin" />
+            </div>
+          )}
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-y border-gray-100">
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">User</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Contact</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Groups</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Contributions</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Role</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Status</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 whitespace-nowrap text-center">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">{user.name}</p>
-                      <p className="text-[10px] text-gray-400">Joined {user.joined}</p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-center">
-                    <div>
-                      <p className="text-xs text-gray-600">{user.email}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-700 text-center">
-                    {user.groups}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-sm font-semibold text-gray-900 text-center">
-                    ${user.contributions.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-center">
-                    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                      user.status === "Active" ? "bg-emerald-50 text-emerald-600" :
-                      user.status === "Blocked" ? "bg-red-50 text-red-600" :
-                      "bg-orange-50 text-orange-600"
-                    }`}>
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-center relative">
-                    <button 
-                      onClick={() => setOpenMenuId(openMenuId === user.id ? null : user.id)}
-                      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
-                    >
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
-                    {openMenuId === user.id && (
-                      <>
-                        <div 
-                          className="fixed inset-0 z-10" 
-                          onClick={() => setOpenMenuId(null)}
-                        ></div>
-                        <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-36 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
-                          {["Active", "Decline", "Block", "Approve"].map((action) => (
-                            <button
-                              key={action}
-                              className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors first:rounded-t-lg last:rounded-b-lg"
-                              onClick={() => {
-                                console.log(`${action} user ${user.id}`);
-                                setOpenMenuId(null);
-                              }}
-                            >
-                              {action}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
+              {!isLoading && users.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                    No users found
                   </td>
                 </tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{user.fullName}</p>
+                        <p className="text-[10px] text-gray-400">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <div>
+                        <p className="text-xs text-gray-600">{user.email}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-700 text-center">
+                      <span className="capitalize">{user.role}</span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${
+                        user.status === "active" ? "bg-emerald-50 text-emerald-600" :
+                        user.status === "suspended" ? "bg-red-50 text-red-600" :
+                        "bg-orange-50 text-orange-600"
+                      }`}>
+                        {user.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-center relative">
+                      <button 
+                        onClick={() => setOpenMenuId(openMenuId === user._id ? null : user._id)}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
+                      >
+                        <MoreHorizontal className="w-5 h-5" />
+                      </button>
+                      {openMenuId === user._id && (
+                        <>
+                          <div 
+                            className="fixed inset-0 z-10" 
+                            onClick={() => setOpenMenuId(null)}
+                          ></div>
+                          <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-36 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
+                            {user.status === "active" && (
+                              <button
+                                className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                onClick={() => handleStatusUpdate(user._id, "suspended")}
+                              >
+                                Suspend
+                              </button>
+                            )}
+                            {user.status === "suspended" && (
+                              <button
+                                className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                onClick={() => handleStatusUpdate(user._id, "active")}
+                              >
+                                Active
+                              </button>
+                            )}
+                            {user.status === "pending" && (
+                              <>
+                                <button
+                                  className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                  onClick={() => handleStatusUpdate(user._id, "active")}
+                                >
+                                  Active
+                                </button>
+                                <button
+                                  className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                  onClick={() => handleStatusUpdate(user._id, "suspended")}
+                                >
+                                  Suspend
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                )
               ))}
             </tbody>
           </table>
@@ -173,24 +254,39 @@ export default function UsersPage() {
         {/* Pagination */}
         <div className="flex items-center justify-end px-6 py-6 border-t border-gray-50 mt-4">
           <div className="flex items-center gap-2">
-            <button className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handlePageChange(Math.max(1, meta.page - 1))}
+              disabled={meta.page === 1 || isLoading}
+              className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((page) => (
-                <button
-                  key={page}
-                  className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-                    page === 2
-                      ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100 scale-110"
-                      : "text-gray-500 hover:bg-gray-50"
-                  }`}
-                >
-                  {page.toString().padStart(2, "0")}
-                </button>
-              ))}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Simple pagination logic for first 5 pages
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    disabled={isLoading}
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
+                      meta.page === pageNum
+                        ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100 scale-110"
+                        : "text-gray-500 hover:bg-gray-50"
+                    }`}
+                  >
+                    {pageNum.toString().padStart(2, "0")}
+                  </button>
+                );
+              })}
+              {totalPages > 5 && <span className="px-2 text-gray-400">...</span>}
             </div>
-            <button className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handlePageChange(Math.min(totalPages, meta.page + 1))}
+              disabled={meta.page === totalPages || isLoading}
+              className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

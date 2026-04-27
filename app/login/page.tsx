@@ -1,24 +1,72 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Eye, EyeOff } from "lucide-react";
+import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { login } from "@/lib/api-auth";
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      router.push("/dashboard");
+    }
+
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
+    setIsLoading(true);
+
+    try {
+      const response = await login({
+        email,
+        password,
+        isDashboardLogin: true,
+      });
+
+      if (response.success) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+        
+        toast.success(response.message || "Logged in successfully");
+        router.push("/dashboard");
+      } else {
+        toast.error(response.message || "Login failed");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +105,9 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="Enter your @ Email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 rounded-full border-gray-300 h-12 focus-visible:ring-[#1A227F] placeholder:text-gray-400"
                 />
               </div>
@@ -80,6 +131,9 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your Password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10 rounded-full border-gray-300 h-12 w-full focus-visible:ring-[#1A227F] placeholder:text-gray-400"
                 />
                 <button
@@ -99,7 +153,12 @@ export default function LoginPage() {
 
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center space-x-2">
-              <Checkbox id="remember" className="border-gray-300 data-[state=checked]:bg-[#1A227F] data-[state=checked]:border-[#1A227F]" />
+              <Checkbox
+                id="remember"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                className="border-gray-300 data-[state=checked]:bg-[#1A227F] data-[state=checked]:border-[#1A227F]"
+              />
               <Label
                 htmlFor="remember"
                 className="text-xs text-gray-500 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -107,20 +166,21 @@ export default function LoginPage() {
                 Rememebr me
               </Label>
             </div>
-
-            <Link
-              href="#"
-              className="text-xs text-gray-500 font-normal hover:text-[#1A227F] hover:underline"
-            >
-              Forgot Password ?
-            </Link>
           </div>
 
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full h-12 rounded-full bg-[#1A227F] hover:bg-[#1A227F]/90 text-white font-medium text-base mt-2"
           >
-            Login
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
       </div>

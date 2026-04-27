@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut
 } from "lucide-react";
+import { logout } from "@/lib/api-auth";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -28,7 +29,7 @@ export function Sidebar() {
   ];
 
   const handleLogout = () => {
-    router.push("/login");
+    logout();
   };
 
   return (
