@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Bell, 
   CheckCircle2, 
@@ -10,66 +10,68 @@ import {
   Clock, 
   MoreVertical,
   Trash2,
-  Check
+  Check,
+  Loader2
 } from "lucide-react";
+import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/lib/api-auth";
+import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 
-// Mock Notifications
-const INITIAL_NOTIFICATIONS = [
-  {
-    id: 1,
-    type: "success",
-    title: "Payment Received",
-    message: "A payment of $500 has been received for the 'Family Saving Circle' group.",
-    time: "2 minutes ago",
-    isRead: false
-  },
-  {
-    id: 2,
-    type: "info",
-    title: "New Member Joined",
-    message: "Sarah Jenkins has joined the 'Labib Circle' group.",
-    time: "1 hour ago",
-    isRead: false
-  },
-  {
-    id: 3,
-    type: "warning",
-    title: "Payment Overdue",
-    message: "John Doe's payment for 'Family Saving Circle' is 2 days overdue.",
-    time: "5 hours ago",
-    isRead: true
-  },
-  {
-    id: 4,
-    type: "error",
-    title: "Transaction Failed",
-    message: "Attempt to distribute funds for 'Weekly Savings' failed due to bank error.",
-    time: "Yesterday",
-    isRead: true
-  },
-  {
-    id: 5,
-    type: "success",
-    title: "Group Completed",
-    message: "The 12-month cycle for 'Retirement Plan A' has been successfully completed.",
-    time: "2 days ago",
-    isRead: true
-  }
-];
+interface Notification {
+  _id: string;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  createdAt: string;
+}
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [meta, setMeta] = useState({ total: 0 });
 
-  const markAsRead = (id: number) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getNotifications({ page: 1, limit: 10 });
+      if (response.success) {
+        setNotifications(response.data.data);
+        setMeta(response.data.meta);
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to fetch notifications");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const deleteNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+  const markAsRead = async (id: string) => {
+    try {
+      const response = await markNotificationRead(id);
+      if (response.success) {
+        setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
+        toast.success("Notification marked as read");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to mark notification as read");
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+  const markAllAsRead = async () => {
+    try {
+      const response = await markAllNotificationsRead();
+      if (response.success) {
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        toast.success("All notifications marked as read");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to mark all as read");
+    }
   };
 
   return (
@@ -82,7 +84,7 @@ export default function NotificationsPage() {
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">Notifications</h2>
-            <p className="text-xs text-gray-500">Stay updated with your platform's latest activities</p>
+            <p className="text-xs text-gray-500">Stay updated with your platform's latest activities ({meta.total})</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -92,24 +94,22 @@ export default function NotificationsPage() {
           >
             Mark all as read
           </button>
-          <button 
-            onClick={() => setNotifications([])}
-            className="text-xs font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-all"
-          >
-            Clear all
-          </button>
         </div>
       </div>
 
       {/* Notifications List */}
       <div className="space-y-3">
-        {notifications.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100/50 shadow-sm">
+            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mb-4" />
+            <p className="text-gray-500 font-medium">Loading notifications...</p>
+          </div>
+        ) : notifications.length > 0 ? (
           notifications.map((n) => (
             <NotificationItem 
-              key={n.id} 
+              key={n._id} 
               notification={n} 
-              onMarkAsRead={() => markAsRead(n.id)}
-              onDelete={() => deleteNotification(n.id)}
+              onMarkAsRead={() => markAsRead(n._id)}
             />
           ))
         ) : (
@@ -126,20 +126,29 @@ export default function NotificationsPage() {
   );
 }
 
-function NotificationItem({ notification: n, onMarkAsRead, onDelete }: { notification: any, onMarkAsRead: () => void, onDelete: () => void }) {
-  const icons = {
-    success: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
-    info: <Info className="w-5 h-5 text-indigo-500" />,
-    warning: <AlertTriangle className="w-5 h-5 text-orange-500" />,
-    error: <XCircle className="w-5 h-5 text-red-500" />
+function NotificationItem({ notification: n, onMarkAsRead }: { notification: Notification, onMarkAsRead: () => void }) {
+  const getStyle = (type: string) => {
+    switch(type) {
+      case 'payment_failed':
+        return {
+          icon: <XCircle className="w-5 h-5 text-red-500" />,
+          bg: "bg-red-50"
+        };
+      case 'group_completed':
+        return {
+          icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+          bg: "bg-emerald-50"
+        };
+      case 'group_started':
+      default:
+        return {
+          icon: <Bell className="w-5 h-5 text-indigo-500" />,
+          bg: "bg-indigo-50"
+        };
+    }
   };
 
-  const bgs = {
-    success: "bg-emerald-50",
-    info: "bg-indigo-50",
-    warning: "bg-orange-50",
-    error: "bg-red-50"
-  };
+  const style = getStyle(n.type);
 
   return (
     <div className={`group bg-white p-6 rounded-2xl border transition-all ${
@@ -150,15 +159,15 @@ function NotificationItem({ notification: n, onMarkAsRead, onDelete }: { notific
       )}
       
       <div className="flex gap-4">
-        <div className={`${bgs[n.type as keyof typeof bgs]} w-12 h-12 rounded-2xl flex items-center justify-center shrink-0`}>
-          {icons[n.type as keyof typeof icons]}
+        <div className={`${style.bg} w-12 h-12 rounded-2xl flex items-center justify-center shrink-0`}>
+          {style.icon}
         </div>
         <div className="flex-1 space-y-1">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-gray-900">{n.title}</h3>
             <span className="text-[10px] font-medium text-gray-400 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {n.time}
+              {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
             </span>
           </div>
           <p className="text-xs text-gray-500 leading-relaxed md:max-w-xl">
@@ -174,13 +183,6 @@ function NotificationItem({ notification: n, onMarkAsRead, onDelete }: { notific
                 Mark as read
               </button>
             )}
-            <button 
-              onClick={onDelete}
-              className="text-[10px] font-bold text-red-500 flex items-center gap-1 hover:underline group-hover:visible"
-            >
-              <Trash2 className="w-3 h-3" />
-              Dismiss
-            </button>
           </div>
         </div>
       </div>

@@ -61,3 +61,18 @@ export const getGroupDetails = async (groupId: string) => {
   const response = await axiosInstance.get(`/groups/${groupId}`);
   return response.data;
 };
+
+export const getNotifications = async (params?: { page?: number; limit?: number }) => {
+  const response = await axiosInstance.get("/notifications", { params });
+  return response.data;
+};
+
+export const markAllNotificationsRead = async () => {
+  const response = await axiosInstance.patch("/notifications/mark-all-read");
+  return response.data;
+};
+
+export const markNotificationRead = async (notificationId: string) => {
+  const response = await axiosInstance.patch(`/notifications/${notificationId}/read`);
+  return response.data;
+};

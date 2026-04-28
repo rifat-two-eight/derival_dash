@@ -1,76 +1,74 @@
 {
     "success": true,
-    "message": "Groups retrieved successfully",
+    "message": "Notifications retrieved successfully",
     "data": {
         "data": [
             {
-                "_id": "69ee86951eca953d0858bfda",
-                "name": "earning group",
-                "description": "Hi,\n\nThanks for sharing the issue. This seems to be related to Google Play Console’s bank/card verification process.\n\nUnfortunately, this part is fully handled by Google, so we don’t have direct control over it. However, you can try a few things:\n\n* Make sure your card supports international and online transactions\n* Double-check that all details match your bank account\n* Try using another card/bank if possible\n* Wait a few working days, as sometimes the verification transfer takes time\n\nSince you’ve already contacted support, I’d recommend following up with them as well.\n\nLet me know if you need any help from our side.\n\nBest regards\n",
-                "createdBy": {
-                    "_id": "69ebcf1d973ba39f57924fb8",
-                    "fullName": "Riyad",
-                    "email": "bedeno2406@4heats.com"
-                },
-                "contributionAmount": 500,
-                "contributionFrequency": "monthly",
-                "totalMembers": 10,
-                "currentMembers": 1,
-                "startDate": "2026-04-27T00:00:00.000Z",
-                "inviteCode": "YPW4S2",
-                "poolAmount": 0,
-                "totalCycles": 1,
-                "status": "upcoming",
-                "isDeleted": false,
-                "createdAt": "2026-04-26T21:41:41.071Z",
-                "updatedAt": "2026-04-26T21:41:41.071Z"
+                "_id": "69efd196d49e8691417a4120",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "New Group Started",
+                "message": "A new savings group 'Global Investors' has been started by Sarah Smith.",
+                "type": "group_started",
+                "isRead": false,
+                "createdAt": "2026-04-27T21:13:58.804Z",
+                "updatedAt": "2026-04-27T21:13:58.804Z"
             },
             {
-                "_id": "69ee851b1eca953d0858bfc0",
-                "name": "Savings Group Alpha",
-                "description": "(optional) saving for dream car",
-                "createdBy": {
-                    "_id": "69ebcf1d973ba39f57924fb8",
-                    "fullName": "Riyad",
-                    "email": "bedeno2406@4heats.com"
-                },
-                "contributionAmount": 1000,
-                "contributionFrequency": "monthly",
-                "totalMembers": 5,
-                "currentMembers": 1,
-                "startDate": "2024-12-01T00:00:00.000Z",
-                "inviteCode": "MG2WVJ",
-                "poolAmount": 0,
-                "totalCycles": 1,
-                "status": "upcoming",
-                "isDeleted": false,
-                "createdAt": "2026-04-26T21:35:23.858Z",
-                "updatedAt": "2026-04-26T21:35:23.858Z"
+                "_id": "69efd196d49e8691417a4121",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "Payment Failure Alert",
+                "message": "Alert: 5 users failed their scheduled payments today. Please review the transaction logs.",
+                "type": "payment_failed",
+                "isRead": false,
+                "createdAt": "2026-04-27T21:13:58.804Z",
+                "updatedAt": "2026-04-27T21:13:58.804Z"
             },
             {
-                "_id": "69ea5a42f1523c535af24bcd",
-                "name": "Savings Group Alpha",
-                "createdBy": {
-                    "_id": "69e80011cd3c8ddc9444be4e",
-                    "fullName": "John Doe",
-                    "email": "gagabaw716@soppat.com"
-                },
-                "contributionAmount": 1000,
-                "contributionFrequency": "monthly",
-                "totalMembers": 5,
-                "currentMembers": 1,
-                "startDate": "2024-12-01T00:00:00.000Z",
-                "inviteCode": "UV7B1D",
-                "poolAmount": 0,
-                "status": "active",
-                "createdAt": "2026-04-23T17:43:30.948Z",
-                "updatedAt": "2026-04-23T17:43:30.948Z"
+                "_id": "69efd196d49e8691417a4122",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "Group Completion Report",
+                "message": "The group 'First Timers' has successfully completed its cycle. All payouts processed.",
+                "type": "group_completed",
+                "isRead": true,
+                "createdAt": "2026-04-27T21:13:58.804Z",
+                "updatedAt": "2026-04-27T21:13:58.804Z"
+            },
+            {
+                "_id": "69efd12911643bda4fe1d930",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "New Group Started",
+                "message": "A new savings group 'Global Investors' has been started by Sarah Smith.",
+                "type": "group_started",
+                "isRead": false,
+                "createdAt": "2026-04-27T21:12:09.579Z",
+                "updatedAt": "2026-04-27T21:12:09.579Z"
+            },
+            {
+                "_id": "69efd12911643bda4fe1d931",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "Payment Failure Alert",
+                "message": "Alert: 5 users failed their scheduled payments today. Please review the transaction logs.",
+                "type": "payment_failed",
+                "isRead": false,
+                "createdAt": "2026-04-27T21:12:09.579Z",
+                "updatedAt": "2026-04-27T21:12:09.579Z"
+            },
+            {
+                "_id": "69efd12911643bda4fe1d932",
+                "userId": "69ed24b486fa349c89af25b3",
+                "title": "Group Completion Report",
+                "message": "The group 'First Timers' has successfully completed its cycle. All payouts processed.",
+                "type": "group_completed",
+                "isRead": true,
+                "createdAt": "2026-04-27T21:12:09.579Z",
+                "updatedAt": "2026-04-27T21:12:09.579Z"
             }
         ],
         "meta": {
             "page": 1,
             "limit": 10,
-            "total": 3
+            "total": 73,
+            "totalPage": 8
         }
     }
 }

@@ -282,7 +282,7 @@ export default function DashboardPage() {
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-500 font-medium">Blocked Users</span>
+                <span className="text-gray-500 font-medium">Suspended Users</span>
                 <span className="text-gray-900 font-semibold">{growthStats?.blocked || 0}</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-2">
