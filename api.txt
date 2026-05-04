@@ -1,74 +1,34 @@
 {
     "success": true,
-    "message": "Notifications retrieved successfully",
+    "message": "User Logged In Successfully!",
     "data": {
-        "data": [
-            {
-                "_id": "69efd196d49e8691417a4120",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "New Group Started",
-                "message": "A new savings group 'Global Investors' has been started by Sarah Smith.",
-                "type": "group_started",
-                "isRead": false,
-                "createdAt": "2026-04-27T21:13:58.804Z",
-                "updatedAt": "2026-04-27T21:13:58.804Z"
-            },
-            {
-                "_id": "69efd196d49e8691417a4121",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "Payment Failure Alert",
-                "message": "Alert: 5 users failed their scheduled payments today. Please review the transaction logs.",
-                "type": "payment_failed",
-                "isRead": false,
-                "createdAt": "2026-04-27T21:13:58.804Z",
-                "updatedAt": "2026-04-27T21:13:58.804Z"
-            },
-            {
-                "_id": "69efd196d49e8691417a4122",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "Group Completion Report",
-                "message": "The group 'First Timers' has successfully completed its cycle. All payouts processed.",
-                "type": "group_completed",
-                "isRead": true,
-                "createdAt": "2026-04-27T21:13:58.804Z",
-                "updatedAt": "2026-04-27T21:13:58.804Z"
-            },
-            {
-                "_id": "69efd12911643bda4fe1d930",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "New Group Started",
-                "message": "A new savings group 'Global Investors' has been started by Sarah Smith.",
-                "type": "group_started",
-                "isRead": false,
-                "createdAt": "2026-04-27T21:12:09.579Z",
-                "updatedAt": "2026-04-27T21:12:09.579Z"
-            },
-            {
-                "_id": "69efd12911643bda4fe1d931",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "Payment Failure Alert",
-                "message": "Alert: 5 users failed their scheduled payments today. Please review the transaction logs.",
-                "type": "payment_failed",
-                "isRead": false,
-                "createdAt": "2026-04-27T21:12:09.579Z",
-                "updatedAt": "2026-04-27T21:12:09.579Z"
-            },
-            {
-                "_id": "69efd12911643bda4fe1d932",
-                "userId": "69ed24b486fa349c89af25b3",
-                "title": "Group Completion Report",
-                "message": "The group 'First Timers' has successfully completed its cycle. All payouts processed.",
-                "type": "group_completed",
-                "isRead": true,
-                "createdAt": "2026-04-27T21:12:09.579Z",
-                "updatedAt": "2026-04-27T21:12:09.579Z"
-            }
-        ],
-        "meta": {
-            "page": 1,
-            "limit": 10,
-            "total": 73,
-            "totalPage": 8
+        "requires2FA": false,
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWVkMjRiNDg2ZmEzNDljODlhZjI1YjMiLCJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJ0YXBpZjM2ODEzQDRoZWF0cy5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Nzc5MTExNjgsImV4cCI6MTc3NzkxMTQ2OH0.44LV3ZSA9xAWGoCmTYokRlXqVF6OV0dGu-UsMJd-Ei0",
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWVkMjRiNDg2ZmEzNDljODlhZjI1YjMiLCJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJ0YXBpZjM2ODEzQDRoZWF0cy5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Nzc5MTExNjgsImV4cCI6MTc4MDUwMzE2OH0.ts0Npp5Vn1ZL5CKsfInfzOrx-4iTEFhvaKzqXGk0nIE",
+        "user": {
+            "isMock": false,
+            "_id": "69ed24b486fa349c89af25b3",
+            "fullName": "John Doe",
+            "email": "tapif36813@4heats.com",
+            "phone": "01712345678",
+            "agreeToTerms": true,
+            "authProviders": [
+                "email"
+            ],
+            "role": "admin",
+            "status": "active",
+            "profileImage": "(optional) URL string",
+            "occupation": "(optional) string",
+            "language": "English",
+            "kycStatus": "pending",
+            "isVerified": true,
+            "verificationLastSent": "2026-04-25T20:31:48.225Z",
+            "twoFactorEnabled": false,
+            "isUpdatedProfile": false,
+            "stripeConnectStatus": "unverified",
+            "createdAt": "2026-04-25T20:31:48.235Z",
+            "updatedAt": "2026-04-25T20:33:08.180Z",
+            "id": "69ed24b486fa349c89af25b3"
         }
     }
 }

@@ -5,6 +5,13 @@ export const login = async (data: any) => {
   return response.data;
 };
 
+export const refreshToken = async (token: string) => {
+  const response = await axiosInstance.post("/auth/refresh-token", {
+    refreshToken: token,
+  });
+  return response.data;
+};
+
 export const logout = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
