@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   BarChart3, 
   Users, 
@@ -8,6 +8,7 @@ import {
   Download, 
   ChevronDown, 
   TrendingUp,
+  Loader2
 } from "lucide-react";
 import { 
   AreaChart, 
@@ -18,6 +19,8 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from "recharts";
+import { getPerformanceAnalytics } from "@/lib/api-auth";
+import { toast } from "sonner";
 
 // Mock Data for the chart
 const REVENUE_DATA = [
@@ -37,6 +40,33 @@ const REVENUE_DATA = [
 
 export default function ReportsPage() {
   const [selectedYear, setSelectedYear] = useState("2026");
+  const [performance, setPerformance] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPerformance = async () => {
+      try {
+        const response = await getPerformanceAnalytics();
+        if (response.success) {
+          setPerformance(response.data);
+        }
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to load performance analytics");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPerformance();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-[#1A2279] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-20">
@@ -146,7 +176,7 @@ export default function ReportsPage() {
           />
           <GrowthStatCard 
             title="Retention Rate" 
-            value="87%" 
+            value={`${performance?.retentionRate?.toFixed(1) || 0}%`} 
             trend="↑ 3% from last month" 
             bgColor="bg-purple-50/50" 
             textColor="text-purple-600" 
@@ -156,9 +186,9 @@ export default function ReportsPage() {
         {/* Group Performance Metrics */}
         <div className="space-y-4 pt-4 border-t border-gray-50">
           <h3 className="text-sm font-bold text-gray-900 mb-6">Group Performance Metrics</h3>
-          <PerformanceBar label="Average Group Completion Rate" percentage={92} color="bg-emerald-500" />
-          <PerformanceBar label="On-Time Payment Rate" percentage={88} color="bg-indigo-600" />
-          <PerformanceBar label="Average Group Fill Rate" percentage={75} color="bg-purple-600" />
+          <PerformanceBar label="Average Group Completion Rate" percentage={Math.round(performance?.averageGroupCompletionRate || 0)} color="bg-emerald-500" />
+          <PerformanceBar label="On-Time Payment Rate" percentage={Math.round(performance?.onTimePaymentRate || 0)} color="bg-indigo-600" />
+          <PerformanceBar label="Average Group Fill Rate" percentage={Math.round(performance?.averageGroupFillRate || 0)} color="bg-purple-600" />
         </div>
       </div>
 

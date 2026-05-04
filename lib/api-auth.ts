@@ -44,8 +44,28 @@ export const getRecentActivities = async () => {
   return response.data;
 };
 
+export const getFundsSummary = async () => {
+  const response = await axiosInstance.get("/admin/funds/summary");
+  return response.data;
+};
+
+export const getGroupFundDetails = async (params: { page?: number; limit?: number }) => {
+  const response = await axiosInstance.get("/admin/funds/group-details", { params });
+  return response.data;
+};
+
 export const getUserGrowth = async () => {
   const response = await axiosInstance.get("/admin/dashboard/user-growth");
+  return response.data;
+};
+
+export const getRevenueChartData = async () => {
+  const response = await axiosInstance.get("/admin/dashboard/revenue-chart");
+  return response.data;
+};
+
+export const getPerformanceAnalytics = async () => {
+  const response = await axiosInstance.get("/admin/reports/performance");
   return response.data;
 };
 

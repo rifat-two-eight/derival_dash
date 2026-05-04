@@ -17,8 +17,9 @@ import {
   Loader2
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { getDashboardSummary, getUsers, getRecentActivities, getUserGrowth } from "@/lib/api-auth";
+import { getDashboardSummary, getUsers, getRecentActivities, getUserGrowth, getRevenueChartData } from "@/lib/api-auth";
 import { toast } from "sonner";
+
 import { formatDistanceToNow } from 'date-fns';
 import Link from "next/link";
 
@@ -56,36 +57,23 @@ interface GrowthStats {
   blocked: number;
 }
 
-const chartData = [
-  { name: 'JAN', revenue: 3500 },
-  { name: 'FEB', revenue: 3800 },
-  { name: 'MAR', revenue: 3200 },
-  { name: 'APR', revenue: 2000 },
-  { name: 'MAY', revenue: 3200 },
-  { name: 'JUN', revenue: 2800 },
-  { name: 'JUL', revenue: 3500 },
-  { name: 'AUG', revenue: 2500 },
-  { name: 'SEP', revenue: 1800 },
-  { name: 'OCT', revenue: 4200 },
-  { name: 'NOV', revenue: 3100 },
-  { name: 'DEC', revenue: 4500 },
-];
-
 export default function DashboardPage() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [growthStats, setGrowthStats] = useState<GrowthStats | null>(null);
   const [recentUsers, setRecentUsers] = useState<User[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [summaryRes, usersRes, activitiesRes, growthRes] = await Promise.all([
+        const [summaryRes, usersRes, activitiesRes, growthRes, revenueRes] = await Promise.all([
           getDashboardSummary(),
           getUsers({ limit: 4 }),
           getRecentActivities(),
-          getUserGrowth()
+          getUserGrowth(),
+          getRevenueChartData()
         ]);
 
         if (summaryRes.success) {
@@ -99,6 +87,9 @@ export default function DashboardPage() {
         }
         if (growthRes.success) {
           setGrowthStats(growthRes.data.stats);
+        }
+        if (revenueRes.success) {
+          setRevenueData(revenueRes.data);
         }
       } catch (error: any) {
         console.error("Dashboard data fetch error:", error);
@@ -191,22 +182,22 @@ export default function DashboardPage() {
           <div className="flex justify-between items-start mb-6">
             <div>
               <p className="text-gray-500 text-sm font-medium mb-1">Monthly Revenue</p>
-              <div className="flex items-baseline gap-2">
-                <h3 className="text-2xl font-bold text-gray-900">$12.7k</h3>
+              {/* <div className="flex items-baseline gap-2">
+                <h3 className="text-2xl font-bold text-gray-900">${summary?.totalRevenue?.toLocaleString() || 0}</h3>
                 <span className="text-xs font-medium text-emerald-500">↑ 1.3%</span>
-              </div>
+              </div> */}
             </div>
-            <select className="bg-gray-50 border-none text-xs font-medium text-gray-500 rounded-lg px-3 py-1.5 focus:ring-0 cursor-pointer">
+            {/* <select className="bg-gray-50 border-none text-xs font-medium text-gray-500 rounded-lg px-3 py-1.5 focus:ring-0 cursor-pointer">
               <option>October</option>
               <option>November</option>
               <option>December</option>
-            </select>
+            </select> */}
           </div>
 
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
-                data={chartData}
+                data={revenueData}
                 margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
               >
                 <defs>
@@ -216,7 +207,7 @@ export default function DashboardPage() {
                   </linearGradient>
                 </defs>
                 <XAxis
-                  dataKey="name"
+                  dataKey="month"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: '#9CA3AF', fontSize: 10 }}
@@ -260,8 +251,8 @@ export default function DashboardPage() {
                 <span className="text-gray-900 font-semibold">{growthStats?.active || 0}</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500" 
+                <div
+                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${summary?.totalUsers ? (growthStats?.active || 0) / summary.totalUsers * 100 : 0}%` }}
                 ></div>
               </div>
@@ -273,8 +264,8 @@ export default function DashboardPage() {
                 <span className="text-gray-900 font-semibold">{growthStats?.pending || 0}</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-orange-400 h-2 rounded-full transition-all duration-500" 
+                <div
+                  className="bg-orange-400 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${summary?.totalUsers ? (growthStats?.pending || 0) / summary.totalUsers * 100 : 0}%` }}
                 ></div>
               </div>
@@ -286,8 +277,8 @@ export default function DashboardPage() {
                 <span className="text-gray-900 font-semibold">{growthStats?.blocked || 0}</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-red-500 h-2 rounded-full transition-all duration-500" 
+                <div
+                  className="bg-red-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${summary?.totalUsers ? (growthStats?.blocked || 0) / summary.totalUsers * 100 : 0}%` }}
                 ></div>
               </div>
@@ -309,11 +300,10 @@ export default function DashboardPage() {
                     <p className="text-sm font-medium text-gray-900">{user.fullName}</p>
                     <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
-                  <span className={`px-2.5 py-1 text-[10px] font-semibold rounded-full capitalize ${
-                    user.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 
-                    user.status === 'suspended' ? 'bg-red-50 text-red-600' : 
-                    'bg-orange-50 text-orange-600'
-                  }`}>
+                  <span className={`px-2.5 py-1 text-[10px] font-semibold rounded-full capitalize ${user.status === 'active' ? 'bg-emerald-50 text-emerald-600' :
+                    user.status === 'suspended' ? 'bg-red-50 text-red-600' :
+                      'bg-orange-50 text-orange-600'
+                    }`}>
                     {user.status}
                   </span>
                 </div>
@@ -335,11 +325,10 @@ export default function DashboardPage() {
             {activities.length > 0 ? (
               activities.map((activity) => (
                 <div key={activity._id} className="flex gap-4 items-start">
-                  <div className={`p-2 rounded-full shrink-0 ${
-                    activity.action.includes('LOGIN') ? 'bg-indigo-50' :
+                  <div className={`p-2 rounded-full shrink-0 ${activity.action.includes('LOGIN') ? 'bg-indigo-50' :
                     activity.action.includes('STATUS') ? 'bg-emerald-50' :
-                    'bg-purple-50'
-                  }`}>
+                      'bg-purple-50'
+                    }`}>
                     {activity.action.includes('LOGIN') ? (
                       <UserCheck className={`w-4 h-4 ${activity.action.includes('LOGIN') ? 'text-indigo-600' : ''}`} />
                     ) : activity.action.includes('STATUS') ? (
@@ -354,7 +343,10 @@ export default function DashboardPage() {
                       {activity.details}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
+                      {activity.createdAt ? (() => {
+                        const date = new Date(activity.createdAt);
+                        return isNaN(date.getTime()) ? 'Invalid date' : formatDistanceToNow(date, { addSuffix: true });
+                      })() : 'N/A'}
                     </p>
                   </div>
                 </div>

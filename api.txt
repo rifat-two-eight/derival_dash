@@ -1,34 +1,54 @@
 {
     "success": true,
-    "message": "User Logged In Successfully!",
-    "data": {
-        "requires2FA": false,
-        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWVkMjRiNDg2ZmEzNDljODlhZjI1YjMiLCJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJ0YXBpZjM2ODEzQDRoZWF0cy5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Nzc5MTExNjgsImV4cCI6MTc3NzkxMTQ2OH0.44LV3ZSA9xAWGoCmTYokRlXqVF6OV0dGu-UsMJd-Ei0",
-        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWVkMjRiNDg2ZmEzNDljODlhZjI1YjMiLCJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJ0YXBpZjM2ODEzQDRoZWF0cy5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Nzc5MTExNjgsImV4cCI6MTc4MDUwMzE2OH0.ts0Npp5Vn1ZL5CKsfInfzOrx-4iTEFhvaKzqXGk0nIE",
-        "user": {
-            "isMock": false,
-            "_id": "69ed24b486fa349c89af25b3",
-            "fullName": "John Doe",
-            "email": "tapif36813@4heats.com",
-            "phone": "01712345678",
-            "agreeToTerms": true,
-            "authProviders": [
-                "email"
-            ],
-            "role": "admin",
-            "status": "active",
-            "profileImage": "(optional) URL string",
-            "occupation": "(optional) string",
-            "language": "English",
-            "kycStatus": "pending",
-            "isVerified": true,
-            "verificationLastSent": "2026-04-25T20:31:48.225Z",
-            "twoFactorEnabled": false,
-            "isUpdatedProfile": false,
-            "stripeConnectStatus": "unverified",
-            "createdAt": "2026-04-25T20:31:48.235Z",
-            "updatedAt": "2026-04-25T20:33:08.180Z",
-            "id": "69ed24b486fa349c89af25b3"
+    "message": "Revenue chart data retrieved successfully",
+    "data": [
+        {
+            "month": "Jan",
+            "revenue": 135.45447494349577
+        },
+        {
+            "month": "Feb",
+            "revenue": 92.41912745748503
+        },
+        {
+            "month": "Mar",
+            "revenue": 163.30300291882824
+        },
+        {
+            "month": "Apr",
+            "revenue": 956.8276144445473
+        },
+        {
+            "month": "May",
+            "revenue": 179.9464005586431
+        },
+        {
+            "month": "Jun",
+            "revenue": 0
+        },
+        {
+            "month": "Jul",
+            "revenue": 0
+        },
+        {
+            "month": "Aug",
+            "revenue": 0
+        },
+        {
+            "month": "Sep",
+            "revenue": 0
+        },
+        {
+            "month": "Oct",
+            "revenue": 0
+        },
+        {
+            "month": "Nov",
+            "revenue": 0
+        },
+        {
+            "month": "Dec",
+            "revenue": 0
         }
-    }
+    ]
 }

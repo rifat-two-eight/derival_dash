@@ -277,7 +277,12 @@ export default function GroupsPage() {
                         <Calendar className="w-4 h-4 text-[#1A2279]" />
                         <span className="text-sm font-medium text-gray-600">Start Date</span>
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{format(new Date(selectedGroup.startDate), 'MMMM dd, yyyy')}</span>
+                      <span className="text-sm font-bold text-gray-900">
+                        {selectedGroup.startDate ? (() => {
+                          const date = new Date(selectedGroup.startDate);
+                          return isNaN(date.getTime()) ? 'Invalid Date' : format(date, 'MMMM dd, yyyy');
+                        })() : 'N/A'}
+                      </span>
                     </div>
                   </div>
 
@@ -534,7 +539,12 @@ function GroupCard({ group, onClick }: { group: Group; onClick: () => void }) {
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Calendar className="w-4 h-4 text-gray-400" />
-            <span className="font-medium">Starts: {format(new Date(group.startDate), 'MMM dd, yyyy')}</span>
+            <span className="font-medium">
+              Starts: {group.startDate ? (() => {
+                const date = new Date(group.startDate);
+                return isNaN(date.getTime()) ? 'Invalid Date' : format(date, 'MMM dd, yyyy');
+              })() : 'N/A'}
+            </span>
           </div>
         </div>
       </div>

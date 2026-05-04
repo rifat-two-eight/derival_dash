@@ -41,11 +41,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.error("Interceptor caught error:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      url: originalRequest?.url
-    });
 
     // Trigger refresh on 401 (Standard) or 500 (Specific to this backend's token expiration behavior)
     if ((error.response?.status === 401 || error.response?.status === 500) && !originalRequest._retry) {
@@ -86,15 +81,15 @@ axiosInstance.interceptors.response.use(
           const { accessToken } = response.data.data;
           // The backend might not return a new refresh token, so we keep the old one
           const newRefreshToken = response.data.data.refreshToken;
-          
+
           localStorage.setItem("accessToken", accessToken);
           if (newRefreshToken) {
             localStorage.setItem("refreshToken", newRefreshToken);
           }
-          
+
           axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-          
+
           processQueue(null, accessToken);
           return axiosInstance(originalRequest);
         }
