@@ -16,6 +16,7 @@ import {
 import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/lib/api-auth";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { useNotifications } from "@/context/NotificationContext";
 
 interface Notification {
   _id: string;
@@ -30,6 +31,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [meta, setMeta] = useState({ total: 0 });
+  const { refreshUnreadCount } = useNotifications();
 
   useEffect(() => {
     fetchNotifications();
@@ -42,6 +44,8 @@ export default function NotificationsPage() {
       if (response.success) {
         setNotifications(response.data.data);
         setMeta(response.data.meta);
+        // Sync context on load
+        refreshUnreadCount();
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to fetch notifications");
@@ -55,6 +59,7 @@ export default function NotificationsPage() {
       const response = await markNotificationRead(id);
       if (response.success) {
         setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
+        refreshUnreadCount();
         toast.success("Notification marked as read");
       }
     } catch (error: any) {
@@ -67,6 +72,7 @@ export default function NotificationsPage() {
       const response = await markAllNotificationsRead();
       if (response.success) {
         setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        refreshUnreadCount();
         toast.success("All notifications marked as read");
       }
     } catch (error: any) {
