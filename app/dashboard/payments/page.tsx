@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   MoreHorizontal,
@@ -8,32 +8,58 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertCircle,
-  ExternalLink
+  Loader2
 } from "lucide-react";
-
-// Mock Data
-const MOCK_PAYMENTS = [
-  { id: "Pay-1", group: "Family Saving Circle", amount: 500, method: "Bank Account ***555", date: "2026-03-01", status: "Completed" },
-  { id: "Pay-2", group: "Labib Circle", amount: 200, method: "Credit Card ***555", date: "2026-03-01", status: "Completed" },
-  { id: "Pay-3", group: "Family Saving Circle", amount: 500, method: "Bank Account ***555", date: "2026-03-01", status: "Pending" },
-  { id: "Pay-4", group: "Labib Circle", amount: 200, method: "Credit Card ***555", date: "2026-03-01", status: "Completed" },
-  { id: "Pay-5", group: "Family Saving Circle", amount: 500, method: "Bank Account ***555", date: "2026-03-01", status: "Pending" },
-  { id: "Pay-6", group: "Labib Circle", amount: 200, method: "Credit Card ***555", date: "2026-03-01", status: "Completed" },
-  { id: "Pay-7", group: "Family Saving Circle", amount: 500, method: "Bank Account ***555", date: "2026-03-01", status: "Completed" },
-];
+import { getTransactions } from "@/lib/api-auth";
+import { toast } from "sonner";
+import { format } from "date-fns";
 
 export default function PaymentsPage() {
   const [activeTab, setActiveTab] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState<any>({ total: 0, totalPage: 1 });
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      setIsLoading(true);
+      try {
+        const params: any = {
+          page,
+          limit: 10,
+          search: searchQuery || undefined,
+        };
+        
+        if (activeTab !== "All") {
+          params.status = activeTab === "Completed" ? "success" : activeTab.toLowerCase();
+        }
+
+        const response = await getTransactions(params);
+        if (response.success) {
+          setTransactions(response.data);
+          setMeta(response.meta);
+        }
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to load transactions");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchTransactions, searchQuery ? 500 : 0);
+    return () => clearTimeout(timeoutId);
+  }, [page, activeTab, searchQuery]);
 
   return (
     <div className="space-y-6 pb-20">
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Payments" value="3" color="indigo" />
-        <StatCard title="Completed" value="$1000" color="emerald" />
-        <StatCard title="Pending" value="$200" color="orange" />
-        <StatCard title="Failed" value="0" color="red" />
+        <StatCard title="Total Payments" value={meta.total.toString()} color="indigo" />
+        <StatCard title="Completed" value={transactions.filter(t => t.status === 'success').length.toString()} color="emerald" />
+        <StatCard title="Pending" value={transactions.filter(t => t.status === 'pending').length.toString()} color="orange" />
+        <StatCard title="Failed" value={transactions.filter(t => t.status === 'failed').length.toString()} color="red" />
       </div>
 
       {/* Filter Bar */}
@@ -43,17 +69,23 @@ export default function PaymentsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search payments..."
+              placeholder="Search by user, group or reference..."
               className="w-full pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A2279]/10 focus:border-[#1A2279] transition-all"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
             />
           </div>
           <div className="flex items-center gap-2 overflow-x-auto">
             {["All", "Completed", "Pending", "Failed"].map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setPage(1);
+                }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab
                     ? "bg-[#1A2279] text-white shadow-md shadow-indigo-100"
                     : "bg-gray-50 text-gray-500 hover:bg-gray-100"
@@ -68,80 +100,102 @@ export default function PaymentsPage() {
 
       {/* Main Unified Card */}
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50">
-        <div className="overflow-x-auto border border-gray-100 rounded-xl">
+        <div className="overflow-x-auto border border-gray-100 rounded-xl relative min-h-[400px]">
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 text-[#1A2279] animate-spin" />
+            </div>
+          )}
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Transaction ID</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">User</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Group</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Amount</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Payment method</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Ref ID</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Date</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Status</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {MOCK_PAYMENTS.map((payment) => (
-                <tr key={payment.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-5 whitespace-nowrap text-[10px] font-bold text-gray-900 text-center">
-                    {payment.id}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-xs text-gray-700 text-center">
-                    {payment.group}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-xs font-semibold text-gray-900 text-center">
-                    ${payment.amount}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-xs text-gray-500 text-center">
-                    {payment.method}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-[10px] text-gray-500 text-center">
-                    {payment.date}
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-center">
-                    <span className={`px-3 py-1 text-[10px] font-bold rounded-full ${payment.status === "Completed" ? "bg-emerald-50 text-emerald-600" :
-                        payment.status === "Pending" ? "bg-orange-50 text-orange-600" :
-                          "bg-red-50 text-red-600"
-                      }`}>
-                      {payment.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 whitespace-nowrap text-center">
-                    <button className="text-gray-300 hover:text-gray-500 transition-colors">
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
+              {transactions.length > 0 ? (
+                transactions.map((tx) => (
+                  <tr key={tx._id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <div>
+                        <p className="text-xs font-bold text-gray-900">{tx.userId?.fullName}</p>
+                        <p className="text-[10px] text-gray-400">{tx.userId?.email}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-xs text-gray-700 text-center">
+                      {tx.groupId?.name}
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-xs font-semibold text-gray-900 text-center">
+                      ${tx.amount}
+                      <p className="text-[8px] text-gray-400 font-normal">Fee: ${tx.fee}</p>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-[10px] text-gray-500 text-center">
+                      {tx.referenceId}
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-[10px] text-gray-500 text-center">
+                      {tx.createdAt ? format(new Date(tx.createdAt), 'MMM dd, yyyy HH:mm') : 'N/A'}
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <span className={`px-3 py-1 text-[10px] font-bold rounded-full capitalize ${tx.status === "success" ? "bg-emerald-50 text-emerald-600" :
+                          tx.status === "pending" ? "bg-orange-50 text-orange-600" :
+                            "bg-red-50 text-red-600"
+                        }`}>
+                        {tx.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : !isLoading && (
+                <tr>
+                  <td colSpan={7} className="px-6 py-10 text-center text-gray-500 italic">
+                    No transactions found
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-end px-6 py-6 border-t border-gray-50 mt-4">
-          <div className="flex items-center gap-2">
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((page) => (
-                <button
-                  key={page}
-                  className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${page === 2
-                      ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100"
-                      : "text-gray-500 hover:bg-gray-50"
-                    }`}
-                >
-                  {page.toString().padStart(2, "0")}
-                </button>
-              ))}
+        {meta.totalPage > 1 && (
+          <div className="flex items-center justify-end px-6 py-6 border-t border-gray-50 mt-4">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: meta.totalPage }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${page === p
+                        ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100"
+                        : "text-gray-500 hover:bg-gray-50"
+                      }`}
+                  >
+                    {p.toString().padStart(2, "0")}
+                  </button>
+                ))}
+              </div>
+              <button 
+                onClick={() => setPage(p => Math.min(meta.totalPage, p + 1))}
+                disabled={page === meta.totalPage}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <ChevronRight className="w-5 h-5" />
-            </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Disputes Banner */}

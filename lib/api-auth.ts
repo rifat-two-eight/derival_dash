@@ -69,6 +69,32 @@ export const getPerformanceAnalytics = async () => {
   return response.data;
 };
 
+export const getPerformanceOverview = async () => {
+  const response = await axiosInstance.get("/admin/reports/performance-overview");
+  return response.data;
+};
+
+export const getSettings = async () => {
+  const response = await axiosInstance.get("/settings");
+  return response.data;
+};
+
+export const updateSettings = async (data: any) => {
+  const response = await axiosInstance.patch("/settings/update", data);
+  return response.data;
+};
+
+export const getTransactions = async (params?: {
+  page?: number;
+  limit?: number;
+  type?: string;
+  status?: string;
+  search?: string;
+}) => {
+  const response = await axiosInstance.get("/transactions", { params });
+  return response.data;
+};
+
 export const getGroups = async (params?: {
   page?: number;
   limit?: number;
