@@ -57,6 +57,11 @@ interface GrowthStats {
   blocked: number;
 }
 
+interface RevenueData {
+  month: string;
+  revenue: number;
+}
+
 export default function DashboardPage() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [growthStats, setGrowthStats] = useState<GrowthStats | null>(null);
