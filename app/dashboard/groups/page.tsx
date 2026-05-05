@@ -93,7 +93,7 @@ export default function GroupsPage() {
         contributionFrequency: formData.contributionFrequency,
         totalMembers: Number(formData.totalMembers),
         totalCycles: Number(formData.totalCycles),
-        startDate: formData.startDate
+        // startDate: formData.startDate
       };
 
       const response = await createGroup(payload);
@@ -272,7 +272,7 @@ export default function GroupsPage() {
                       <span className="text-sm font-bold text-gray-900">{selectedGroup.currentMembers} / {selectedGroup.totalMembers}</span>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    {/* <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
                       <div className="flex items-center gap-3">
                         <Calendar className="w-4 h-4 text-[#1A2279]" />
                         <span className="text-sm font-medium text-gray-600">Start Date</span>
@@ -283,7 +283,7 @@ export default function GroupsPage() {
                           return isNaN(date.getTime()) ? 'Invalid Date' : format(date, 'MMMM dd, yyyy');
                         })() : 'N/A'}
                       </span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <button 
@@ -411,7 +411,7 @@ export default function GroupsPage() {
                         />
                       </div>
                     </div>
-                    <div className="space-y-1.5">
+                    {/* <div className="space-y-1.5">
                       <label className="text-xs font-medium text-gray-500">Start Date</label>
                       <input 
                         type="date" 
@@ -419,7 +419,7 @@ export default function GroupsPage() {
                         value={formData.startDate}
                         onChange={e => setFormData({...formData, startDate: e.target.value})}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <p className="text-[10px] text-gray-400 text-center italic">Each member will contribute ${formData.contributionAmount} {formData.contributionFrequency}</p>
                 </div>
@@ -451,10 +451,10 @@ export default function GroupsPage() {
                       <span className="text-xs font-medium text-gray-500">Total Cycles</span>
                       <span className="text-xs font-semibold text-gray-900">{formData.totalCycles} cycles</span>
                     </div>
-                    <div className="flex justify-between items-start">
+                    {/* <div className="flex justify-between items-start">
                       <span className="text-xs font-medium text-gray-500">Start Date</span>
                       <span className="text-xs font-semibold text-gray-900">{formData.startDate}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between items-start">
                       <span className="text-xs font-medium text-gray-500">Total Payout</span>
                       <span className="text-xs font-bold text-indigo-600">${Number(formData.contributionAmount) * Number(formData.totalMembers)}</span>
