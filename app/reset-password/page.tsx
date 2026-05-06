@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, KeyRound, Eye, EyeOff, Loader2, ArrowLeft, Lock } from "lucide-react";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { resetPassword } from "@/lib/api-auth";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -233,5 +233,17 @@ export default function ResetPasswordPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-[#1A227F]" />
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
