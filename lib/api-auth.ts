@@ -5,6 +5,16 @@ export const login = async (data: any) => {
   return response.data;
 };
 
+export const forgotPassword = async (data: { email: string }) => {
+  const response = await axiosInstance.post("/auth/forgot-password", data);
+  return response.data;
+};
+
+export const resetPassword = async (data: any) => {
+  const response = await axiosInstance.post("/auth/reset-password", data);
+  return response.data;
+};
+
 export const refreshToken = async (token: string) => {
   const response = await axiosInstance.post("/auth/refresh-token", {
     refreshToken: token,
@@ -64,6 +74,11 @@ export const getRevenueChartData = async () => {
   return response.data;
 };
 
+export const getRevenueMetrics = async () => {
+  const response = await axiosInstance.get("/api/v1/revenue/metrics");
+  return response.data;
+};
+
 export const getPerformanceAnalytics = async () => {
   const response = await axiosInstance.get("/admin/reports/performance");
   return response.data;
@@ -112,6 +127,11 @@ export const createGroup = async (data: any) => {
 
 export const getGroupDetails = async (groupId: string) => {
   const response = await axiosInstance.get(`/groups/${groupId}`);
+  return response.data;
+};
+
+export const startGroup = async (groupId: string) => {
+  const response = await axiosInstance.patch(`/admin/groups/${groupId}/start`);
   return response.data;
 };
 

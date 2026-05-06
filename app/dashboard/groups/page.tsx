@@ -15,8 +15,8 @@ import {
   Loader2
 } from "lucide-react";
 import { toast } from "sonner";
-import { getGroups, createGroup, getGroupDetails } from "@/lib/api-auth";
-import { format } from "date-fns";
+import { getGroups, createGroup, getGroupDetails, startGroup } from "@/lib/api-auth";
+import { format, isPast, isToday } from "date-fns";
 
 interface Group {
   _id: string;
@@ -131,6 +131,19 @@ export default function GroupsPage() {
       setIsDetailModalOpen(false);
     } finally {
       setIsDetailLoading(false);
+    }
+  };
+
+  const handleStartGroup = async (groupId: string) => {
+    try {
+      const response = await startGroup(groupId);
+      if (response.success) {
+        toast.success("Group started successfully!");
+        setIsDetailModalOpen(false);
+        fetchGroups();
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to start group");
     }
   };
 
@@ -284,11 +297,19 @@ export default function GroupsPage() {
                         })() : 'N/A'}
                       </span>
                     </div> */}
+                    {selectedGroup.status === 'upcoming' && selectedGroup.currentMembers === selectedGroup.totalMembers && (
+                      <button 
+                        onClick={() => handleStartGroup(selectedGroup._id)}
+                        className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
+                      >
+                        Manual Start
+                      </button>
+                    )}
                   </div>
 
                   <button 
                     onClick={() => setIsDetailModalOpen(false)}
-                    className="w-full py-4 bg-[#1A2279] text-white rounded-2xl font-bold hover:bg-indigo-900 transition-all shadow-lg shadow-indigo-100"
+                    className="w-full py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all shadow-sm"
                   >
                     Close Details
                   </button>
@@ -520,11 +541,19 @@ function GroupCard({ group, onClick }: { group: Group; onClick: () => void }) {
       <div>
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-bold text-gray-900 group-hover:text-[#1A2279] transition-colors line-clamp-1">{group.name}</h3>
-          <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full capitalize ${
-            group.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 
-            group.status === 'upcoming' ? 'bg-orange-50 text-orange-600' : 
-            'bg-gray-50 text-gray-600'
-          }`}>{group.status}</span>
+          <div className="flex flex-col items-end gap-1">
+            <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full capitalize ${
+              group.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 
+              group.status === 'upcoming' ? 'bg-orange-50 text-orange-600' : 
+              'bg-gray-50 text-gray-600'
+            }`}>{group.status}</span>
+            {group.status === 'upcoming' && group.startDate && isPast(new Date(group.startDate)) && !isToday(new Date(group.startDate)) && (
+              <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 rounded-full border border-red-100">Delayed</span>
+            )}
+            {group.status === 'upcoming' && group.currentMembers === group.totalMembers && (
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 rounded-full border border-emerald-100">Ready</span>
+            )}
+          </div>
         </div>
         <p className="text-sm text-gray-400 mb-6 line-clamp-2 min-h-[40px]">{group.description}</p>
         

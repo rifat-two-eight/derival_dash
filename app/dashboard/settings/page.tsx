@@ -32,7 +32,8 @@ export default function SettingsPage() {
     isSocialLoginEnabled: false,
     isTwoFactorAuthenticationEnabled: false,
     isEmailNotificationEnabled: false,
-    isPushNotificationEnabled: false
+    isPushNotificationEnabled: false,
+    minimumStripeBalance: 0
   });
 
   useEffect(() => {
@@ -121,15 +122,22 @@ export default function SettingsPage() {
             label="Grace Period (Days)" 
             type="number"
             icon={<Clock className="w-4 h-4 text-gray-400" />}
-            value={settings.gracePeriodDays.toString()} 
+            value={settings.gracePeriodDays?.toString()} 
             onChange={(e) => setSettings({...settings, gracePeriodDays: Number(e.target.value)})} 
           />
           <InputGroup 
             label="Max Retry Count" 
             type="number"
             icon={<RotateCcw className="w-4 h-4 text-gray-400" />}
-            value={settings.maxRetryCount.toString()} 
+            value={settings.maxRetryCount?.toString()} 
             onChange={(e) => setSettings({...settings, maxRetryCount: Number(e.target.value)})} 
+          />
+          <InputGroup 
+            label="Min. Stripe Balance ($)" 
+            type="number"
+            icon={<DollarSign className="w-4 h-4 text-gray-400" />}
+            value={settings.minimumStripeBalance?.toString()} 
+            onChange={(e) => setSettings({...settings, minimumStripeBalance: Number(e.target.value)})} 
           />
         </div>
       </SettingsSection>

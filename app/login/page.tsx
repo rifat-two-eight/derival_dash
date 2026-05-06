@@ -16,7 +16,7 @@ import { login } from "@/lib/api-auth";
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,7 +29,7 @@ export default function LoginPage() {
 
     const rememberedEmail = localStorage.getItem("rememberedEmail");
     if (rememberedEmail) {
-      setEmail(rememberedEmail);
+      setIdentifier(rememberedEmail);
       setRememberMe(true);
     }
   }, [router]);
@@ -40,7 +40,7 @@ export default function LoginPage() {
 
     try {
       const response = await login({
-        email,
+        identifier,
         password,
         isDashboardLogin: true,
       });
@@ -51,11 +51,11 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
         if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
+          localStorage.setItem("rememberedEmail", identifier);
         } else {
           localStorage.removeItem("rememberedEmail");
         }
-        
+
         toast.success(response.message || "Logged in successfully");
         router.push("/dashboard");
       } else {
@@ -97,17 +97,17 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-600 text-sm font-normal">
-                Email
+                Email / Phone Number
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                 <Input
                   id="email"
-                  type="email"
+                  type="text"
                   placeholder="Enter your @ Email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   className="pl-10 rounded-full border-gray-300 h-12 focus-visible:ring-[#1A227F] placeholder:text-gray-400"
                 />
               </div>
@@ -163,9 +163,16 @@ export default function LoginPage() {
                 htmlFor="remember"
                 className="text-xs text-gray-500 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Rememebr me
+                Remember me
               </Label>
             </div>
+
+            <Link
+              href="/forgot-password"
+              className="text-xs text-gray-500 font-normal hover:text-[#1A227F] hover:underline"
+            >
+              Forgot Password ?
+            </Link>
           </div>
 
           <Button

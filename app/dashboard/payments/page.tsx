@@ -112,6 +112,8 @@ export default function PaymentsPage() {
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">User</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Group</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Amount</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Platform Fee</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Stripe Fee</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Ref ID</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Date</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Status</th>
@@ -132,7 +134,12 @@ export default function PaymentsPage() {
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap text-xs font-semibold text-gray-900 text-center">
                       ${tx.amount}
-                      <p className="text-[8px] text-gray-400 font-normal">Fee: ${tx.fee}</p>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-xs text-gray-500 text-center">
+                      ${tx.platformFee || 0}
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-xs text-red-500 text-center">
+                      ${tx.stripeFee || 0}
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap text-[10px] text-gray-500 text-center">
                       {tx.referenceId}
@@ -152,7 +159,7 @@ export default function PaymentsPage() {
                 ))
               ) : !isLoading && (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-gray-500 italic">
+                  <td colSpan={8} className="px-6 py-10 text-center text-gray-500 italic">
                     No transactions found
                   </td>
                 </tr>
