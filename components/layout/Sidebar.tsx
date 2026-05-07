@@ -36,7 +36,7 @@ export function Sidebar() {
     <aside className="w-64 bg-[#1A227F] h-screen flex flex-col fixed left-0 top-0 text-white z-20">
       {/* Brand */}
       <div className="h-16 flex items-center mt-4 px-6 border-b rounded-l-4xl border-white shrink-0">
-        <h1 className="text-2xl font-medium tracking-wide">ROSCA Admin</h1>
+        <h1 className="text-2xl font-medium tracking-wide">POOLPAY</h1>
       </div>
 
       {/* Navigation */}
