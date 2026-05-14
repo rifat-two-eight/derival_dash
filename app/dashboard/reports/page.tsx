@@ -218,7 +218,7 @@ export default function ReportsPage() {
                   <Cell fill="#10B981" />
                 </Pie>
                 <Tooltip 
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Amount']}
+                  formatter={(value: any) => [`$${Number(value).toLocaleString()}`, 'Amount']}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                 />
               </PieChart>
