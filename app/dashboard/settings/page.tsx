@@ -11,9 +11,12 @@ import {
   Loader2,
   Percent,
   Clock,
-  RotateCcw
+  RotateCcw,
+  Database,
+  Trash2,
+  RefreshCw
 } from "lucide-react";
-import { getSettings, updateSettings } from "@/lib/api-auth";
+import { getSettings, updateSettings, seedMockData, clearMockData } from "@/lib/api-auth";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
@@ -62,6 +65,36 @@ export default function SettingsPage() {
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to update settings");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSeedData = async () => {
+    if (!confirm("Are you sure? This will add mock data to your database.")) return;
+    setIsSaving(true);
+    try {
+      const response = await seedMockData();
+      if (response.success) {
+        toast.success("Mock data seeded successfully");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to seed mock data");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleClearData = async () => {
+    if (!confirm("CRITICAL: This will delete all mock data. Proceed?")) return;
+    setIsSaving(true);
+    try {
+      const response = await clearMockData();
+      if (response.success) {
+        toast.success("Mock data cleared successfully");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to clear mock data");
     } finally {
       setIsSaving(false);
     }
@@ -208,6 +241,38 @@ export default function SettingsPage() {
             enabled={settings.isPushNotificationEnabled} 
             onToggle={() => toggleSetting('isPushNotificationEnabled')} 
           />
+        </div>
+      </SettingsSection>
+
+      {/* Developer Tools */}
+      <SettingsSection 
+        title="Developer Tools" 
+        icon={<Database className="w-5 h-5 text-red-500" />}
+      >
+        <div className="flex flex-col md:flex-row gap-4">
+          <button 
+            onClick={handleSeedData}
+            disabled={isSaving}
+            className="flex-1 flex items-center justify-between p-6 bg-indigo-50/50 border border-indigo-100 rounded-2xl group hover:bg-indigo-50 transition-all"
+          >
+            <div className="text-left">
+              <h4 className="text-sm font-bold text-indigo-900">Seed Mock Data</h4>
+              <p className="text-xs text-indigo-400">Populate database with test visualization data</p>
+            </div>
+            <RefreshCw className="w-5 h-5 text-indigo-600 group-hover:rotate-180 transition-transform duration-500" />
+          </button>
+          
+          <button 
+            onClick={handleClearData}
+            disabled={isSaving}
+            className="flex-1 flex items-center justify-between p-6 bg-red-50/50 border border-red-100 rounded-2xl group hover:bg-red-50 transition-all"
+          >
+            <div className="text-left">
+              <h4 className="text-sm font-bold text-red-900">Clear Mock Data</h4>
+              <p className="text-xs text-red-400">Remove all generated test data from system</p>
+            </div>
+            <Trash2 className="w-5 h-5 text-red-600 group-hover:scale-110 transition-transform" />
+          </button>
         </div>
       </SettingsSection>
 

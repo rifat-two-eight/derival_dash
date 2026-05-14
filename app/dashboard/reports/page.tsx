@@ -8,7 +8,11 @@ import {
   Download,
   ChevronDown,
   TrendingUp,
-  Loader2
+  Loader2,
+  PieChart as PieChartIcon,
+  Zap,
+  Star,
+  ShieldCheck
 } from "lucide-react";
 import {
   AreaChart,
@@ -17,22 +21,33 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
 } from "recharts";
-import { getPerformanceOverview } from "@/lib/api-auth";
+import { getPerformanceOverview, getRevenueMetrics } from "@/lib/api-auth";
 import { toast } from "sonner";
 
 export default function ReportsPage() {
   const [selectedYear, setSelectedYear] = useState("2026");
   const [overview, setOverview] = useState<any>(null);
+  const [revenueSummary, setRevenueSummary] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getPerformanceOverview();
-        if (response.success) {
-          setOverview(response.data);
+        const [overviewRes, revenueRes] = await Promise.all([
+          getPerformanceOverview(),
+          getRevenueMetrics()
+        ]);
+
+        if (overviewRes.success) {
+          setOverview(overviewRes.data);
+        }
+        if (revenueRes.success) {
+          setRevenueSummary(revenueRes.data);
         }
       } catch (error: any) {
         toast.error(error.response?.data?.message || "Failed to load report data");
@@ -176,6 +191,78 @@ export default function ReportsPage() {
         </div>
       </div>
 
+      {/* Revenue Categorization Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100/50">
+          <div className="flex items-center gap-3 mb-8">
+            <PieChartIcon className="w-5 h-5 text-indigo-600" />
+            <h2 className="text-lg font-bold text-gray-900">Revenue Categorization</h2>
+          </div>
+          
+          <div className="h-[250px] w-full mb-6">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Regular Membership', value: revenueSummary?.regularMembership || 0 },
+                    { name: 'VIP Membership', value: revenueSummary?.vipMembership || 0 },
+                    { name: 'Platform Fees (1%)', value: revenueSummary?.platformFees || 0 },
+                  ]}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill="#1A2279" />
+                  <Cell fill="#4F5BDB" />
+                  <Cell fill="#10B981" />
+                </Pie>
+                <Tooltip 
+                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Amount']}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <LegendItem label="Regular" color="bg-[#1A2279]" />
+            <LegendItem label="VIP" color="bg-[#4F5BDB]" />
+            <LegendItem label="Fees" color="bg-[#10B981]" />
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100/50 flex flex-col justify-between">
+          <div className="space-y-6">
+            <RevenueItem 
+              icon={<Zap className="w-4 h-4 text-indigo-600" />}
+              label="Regular Membership ($5/yr)"
+              value={revenueSummary?.regularMembership || 0}
+              bgColor="bg-indigo-50"
+            />
+            <RevenueItem 
+              icon={<Star className="w-4 h-4 text-blue-600" />}
+              label="VIP Membership ($10/yr)"
+              value={revenueSummary?.vipMembership || 0}
+              bgColor="bg-blue-50"
+            />
+            <RevenueItem 
+              icon={<ShieldCheck className="w-4 h-4 text-emerald-600" />}
+              label="Platform Fees (1%)"
+              value={revenueSummary?.platformFees || 0}
+              bgColor="bg-emerald-50"
+            />
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-gray-50">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-bold text-gray-400">Total Revenue</span>
+              <span className="text-2xl font-black text-gray-900">${((revenueSummary?.regularMembership || 0) + (revenueSummary?.vipMembership || 0) + (revenueSummary?.platformFees || 0)).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Footer Export Button */}
       {/* <div className="flex justify-end mt-8">
         <button className="bg-[#1A2279] text-white px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-indigo-900 transition-all shadow-lg shadow-indigo-100">
@@ -225,6 +312,32 @@ function PerformanceBar({ label, percentage, color }: { label: string; percentag
           style={{ width: `${percentage}%` }}
         />
       </div>
+    </div>
+  );
+}
+
+function LegendItem({ label, color }: { label: string; color: string }) {
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
+      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{label}</span>
+    </div>
+  );
+}
+
+function RevenueItem({ icon, label, value, bgColor }: { icon: React.ReactNode; label: string; value: number; bgColor: string }) {
+  return (
+    <div className="flex items-center justify-between group">
+      <div className="flex items-center gap-4">
+        <div className={`${bgColor} p-3 rounded-xl group-hover:scale-110 transition-transform`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs font-bold text-gray-900">{label}</p>
+          <p className="text-[10px] text-gray-400 font-medium">Accumulated revenue</p>
+        </div>
+      </div>
+      <span className="text-sm font-black text-gray-700">${value.toLocaleString()}</span>
     </div>
   );
 }

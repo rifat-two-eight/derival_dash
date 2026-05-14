@@ -85,7 +85,11 @@ export default function DashboardPage() {
           setSummary(summaryRes.data);
         }
         if (usersRes.success) {
-          setRecentUsers(usersRes.data.data);
+          const flattenedRecentUsers = usersRes.data.data.map((item: any) => ({
+            ...item._doc,
+            fullName: item.fullName || `${item._doc.firstName} ${item._doc.lastName}`,
+          }));
+          setRecentUsers(flattenedRecentUsers);
         }
         if (activitiesRes.success) {
           setActivities(activitiesRes.data.slice(0, 4));

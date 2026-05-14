@@ -42,6 +42,15 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle 403 Forbidden (Unauthorized/Admin only)
+    if (error.response?.status === 403) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
     // Trigger refresh on 401 (Standard) or 500 (Specific to this backend's token expiration behavior)
     if ((error.response?.status === 401 || error.response?.status === 500) && !originalRequest._retry) {
       if (isRefreshing) {
@@ -73,7 +82,7 @@ axiosInstance.interceptors.response.use(
       try {
         // We use a plain axios instance to avoid interceptors for the refresh call
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/refresh-token`,
           { refreshToken: refreshToken }
         );
 

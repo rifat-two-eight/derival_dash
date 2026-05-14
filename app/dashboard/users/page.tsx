@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { 
-  Search, 
-  MoreHorizontal, 
-  Download, 
-  ChevronLeft, 
+import {
+  Search,
+  MoreHorizontal,
+  Download,
+  ChevronLeft,
   ChevronRight,
   Loader2
 } from "lucide-react";
@@ -21,6 +21,8 @@ interface User {
   createdAt: string;
   role: string;
   profileImage?: string;
+  failedLoginAttempts: number;
+  lockoutUntil?: string;
 }
 
 interface Meta {
@@ -49,16 +51,19 @@ export default function UsersPage() {
       };
       const response = await getUsers(params);
       if (response.success) {
-        setUsers(response.data.data);
+        const flattenedUsers = response.data.data.map((item: any) => ({
+          ...item._doc,
+          fullName: item.fullName || `${item._doc.firstName} ${item._doc.lastName}`,
+        }));
+        setUsers(flattenedUsers);
         setMeta(response.data.meta);
-        
-        // Mock stats calculation since API might not provide full stats in this endpoint
-        // In a real app, you might have a separate stats endpoint
+
+        // Stats calculation from flattened users
         setStats({
           total: response.data.meta.total,
-          active: response.data.data.filter((u: User) => u.status === "active").length,
-          pending: response.data.data.filter((u: User) => u.status === "pending").length,
-          suspended: response.data.data.filter((u: User) => u.status === "suspended").length,
+          active: flattenedUsers.filter((u: User) => u.status === "active").length,
+          pending: flattenedUsers.filter((u: User) => u.status === "pending").length,
+          suspended: flattenedUsers.filter((u: User) => u.status === "suspended").length,
         });
       }
     } catch (error: any) {
@@ -96,6 +101,20 @@ export default function UsersPage() {
     }
   };
 
+  const handleResetLockout = async (userId: string) => {
+    try {
+      // According to api.txt, clearing failed attempts is done via status endpoint
+      const response = await updateUserStatus(userId, "active"); 
+      if (response.success) {
+        toast.success("User lockout reset successfully");
+        setOpenMenuId(null);
+        fetchUsers();
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to reset lockout");
+    }
+  };
+
   const totalPages = Math.ceil(meta.total / meta.limit);
 
   return (
@@ -127,11 +146,10 @@ export default function UsersPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  activeTab === tab
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab
                     ? "bg-[#1A2279] text-white shadow-md shadow-indigo-100"
                     : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -155,7 +173,7 @@ export default function UsersPage() {
               <tr className="bg-gray-50 border-y border-gray-100">
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">User</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Contact</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Role</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Security</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Status</th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Actions</th>
               </tr>
@@ -182,20 +200,27 @@ export default function UsersPage() {
                         <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-700 text-center">
-                      <span className="capitalize">{user.role}</span>
+                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">Attempts: {user.failedLoginAttempts || 0}</p>
+                        {user.lockoutUntil && (
+                          <p className="text-[10px] text-red-500 mt-1">
+                            Locked until: {new Date(user.lockoutUntil).toLocaleString()}
+                          </p>
+                        )}
+                        <p className="text-[10px] text-gray-400 mt-1 capitalize">{user.role}</p>
+                      </div>
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap text-center">
-                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${
-                        user.status === "active" ? "bg-emerald-50 text-emerald-600" :
-                        user.status === "suspended" ? "bg-red-50 text-red-600" :
-                        "bg-orange-50 text-orange-600"
-                      }`}>
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${user.status === "active" ? "bg-emerald-50 text-emerald-600" :
+                          user.status === "suspended" ? "bg-red-50 text-red-600" :
+                            "bg-orange-50 text-orange-600"
+                        }`}>
                         {user.status}
                       </span>
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap text-center relative">
-                      <button 
+                      <button
                         onClick={() => setOpenMenuId(openMenuId === user._id ? null : user._id)}
                         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
                       >
@@ -203,11 +228,19 @@ export default function UsersPage() {
                       </button>
                       {openMenuId === user._id && (
                         <>
-                          <div 
-                            className="fixed inset-0 z-10" 
+                          <div
+                            className="fixed inset-0 z-10"
                             onClick={() => setOpenMenuId(null)}
                           ></div>
-                          <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-36 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
+                          <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-40 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
+                            {user.failedLoginAttempts > 0 && (
+                              <button
+                                className="w-full px-4 py-2 text-left text-sm text-indigo-600 hover:bg-indigo-50 font-medium transition-colors"
+                                onClick={() => handleResetLockout(user._id)}
+                              >
+                                Reset Lockout
+                              </button>
+                            )}
                             {user.status === "active" && (
                               <button
                                 className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
@@ -246,7 +279,7 @@ export default function UsersPage() {
                     </td>
                   </tr>
                 )
-              ))}
+                ))}
             </tbody>
           </table>
         </div>
@@ -254,7 +287,7 @@ export default function UsersPage() {
         {/* Pagination */}
         <div className="flex items-center justify-end px-6 py-6 border-t border-gray-50 mt-4">
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={() => handlePageChange(Math.max(1, meta.page - 1))}
               disabled={meta.page === 1 || isLoading}
               className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -270,11 +303,10 @@ export default function UsersPage() {
                     key={pageNum}
                     onClick={() => handlePageChange(pageNum)}
                     disabled={isLoading}
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-                      meta.page === pageNum
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${meta.page === pageNum
                         ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100 scale-110"
                         : "text-gray-500 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     {pageNum.toString().padStart(2, "0")}
                   </button>
@@ -282,7 +314,7 @@ export default function UsersPage() {
               })}
               {totalPages > 5 && <span className="px-2 text-gray-400">...</span>}
             </div>
-            <button 
+            <button
               onClick={() => handlePageChange(Math.min(totalPages, meta.page + 1))}
               disabled={meta.page === totalPages || isLoading}
               className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1,0 +1,257 @@
+{
+    "success": true,
+    "message": "Audit logs retrieved successfully",
+    "data": {
+        "data": [
+            {
+                "_id": "6a05175cfe1b191087af544c",
+                "entityType": "user",
+                "entityId": "6a0516ecfe1b191087af539c",
+                "action": "admin_action",
+                "metadata": {
+                    "action": "FORGOT_PASSWORD_OTP_SENT",
+                    "channel": "EMAIL_AND_SMS"
+                },
+                "createdAt": "2026-05-14T00:29:16.113Z"
+            },
+            {
+                "_id": "6a0500a35039e69579a9816d",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "subscription_expiry",
+                "metadata": {
+                    "subscriptionId": "sub_1TWlacA8YgpuhNcIpgdH3OJr"
+                },
+                "createdAt": "2026-05-13T22:52:19.750Z"
+            },
+            {
+                "_id": "6a0500a35039e69579a98167",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "membership_cancel",
+                "metadata": {
+                    "immediate": true
+                },
+                "createdAt": "2026-05-13T22:52:19.369Z"
+            },
+            {
+                "_id": "6a04fe80260be61532a47450",
+                "entityType": "user",
+                "entityId": "6a04f7bfccd638bb9a349aad",
+                "action": "admin_action",
+                "metadata": {
+                    "action": "FORGOT_PASSWORD_OTP_SENT",
+                    "channel": "EMAIL_AND_SMS"
+                },
+                "createdAt": "2026-05-13T22:43:12.581Z"
+            },
+            {
+                "_id": "6a03bf254da57ce651aeef12",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "subscription_expiry",
+                "metadata": {
+                    "subscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                },
+                "createdAt": "2026-05-13T00:00:37.930Z"
+            },
+            {
+                "_id": "6a03bf254da57ce651aeef0c",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "membership_cancel",
+                "metadata": {
+                    "immediate": true
+                },
+                "createdAt": "2026-05-13T00:00:37.617Z"
+            },
+            {
+                "_id": "6a03be92a2ac08963d04926f",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "membership_cancel",
+                "metadata": {
+                    "stripeSubscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                },
+                "createdAt": "2026-05-12T23:58:10.262Z"
+            },
+            {
+                "_id": "6a03be6ca2ac08963d049238",
+                "entityType": "user",
+                "entityId": "69ebc7ff51e8d1122ff14502",
+                "action": "membership_cancel",
+                "metadata": {
+                    "stripeSubscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                },
+                "createdAt": "2026-05-12T23:57:32.921Z"
+            },
+            {
+                "_id": "6a03b3f07e337c8f8880018c",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:48.436Z"
+            },
+            {
+                "_id": "6a03b3eb7e337c8f88800188",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:43.250Z"
+            },
+            {
+                "_id": "6a03b3eb7e337c8f88800186",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:43.015Z"
+            },
+            {
+                "_id": "6a03b3ea7e337c8f88800184",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:42.931Z"
+            },
+            {
+                "_id": "6a03b3ea7e337c8f88800182",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:42.771Z"
+            },
+            {
+                "_id": "6a03b3ea7e337c8f88800180",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:42.615Z"
+            },
+            {
+                "_id": "6a03b3ea7e337c8f8880017e",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:42.545Z"
+            },
+            {
+                "_id": "6a03b3ea7e337c8f8880017c",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:42.397Z"
+            },
+            {
+                "_id": "6a03b3d27e337c8f8880017a",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:18.854Z"
+            },
+            {
+                "_id": "6a03b3d27e337c8f88800178",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:18.799Z"
+            },
+            {
+                "_id": "6a03b3d27e337c8f88800176",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:18.477Z"
+            },
+            {
+                "_id": "6a03b3d27e337c8f88800174",
+                "entityType": "system",
+                "entityId": "webhook",
+                "action": "webhook_rejected",
+                "metadata": {
+                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
+                    "signature": true
+                },
+                "createdAt": "2026-05-12T23:12:18.295Z"
+            },
+            {
+                "_id": "69fe79023d518e73761a455c",
+                "entityType": "turn",
+                "entityId": "69f10cd812f3274bd66d4ee3",
+                "action": "manual_review_escalated",
+                "metadata": {
+                    "reason": "Transfer unverified"
+                },
+                "createdAt": "2026-05-09T00:00:02.289Z"
+            },
+            {
+                "_id": "69fe79013d518e73761a454d",
+                "entityType": "turn",
+                "entityId": "69f108f912f3274bd66d4bc9",
+                "action": "manual_review_escalated",
+                "metadata": {
+                    "reason": "Transfer unverified"
+                },
+                "createdAt": "2026-05-09T00:00:01.848Z"
+            },
+            {
+                "_id": "69fe79013d518e73761a4540",
+                "entityType": "turn",
+                "entityId": "69efe68b4649ba8170cdd628",
+                "action": "manual_review_escalated",
+                "metadata": {
+                    "reason": "Transfer unverified"
+                },
+                "createdAt": "2026-05-09T00:00:01.414Z"
+            }
+        ],
+        "meta": {
+            "page": 1,
+            "limit": 50,
+            "total": 23
+        }
+    }
+}

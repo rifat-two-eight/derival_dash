@@ -10,7 +10,9 @@ import {
   CreditCard,
   BarChart3,
   Settings,
-  LogOut
+  LogOut,
+  Megaphone,
+  History
 } from "lucide-react";
 import { logout } from "@/lib/api-auth";
 
@@ -24,6 +26,8 @@ export function Sidebar() {
     { name: "Groups", href: "/dashboard/groups", icon: Component },
     { name: "Funds", href: "/dashboard/funds", icon: DollarSign },
     { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
+    { name: "Advertisements", href: "/dashboard/ads", icon: Megaphone },
+    { name: "Audit Logs", href: "/dashboard/audit-logs", icon: History },
     { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
@@ -63,7 +67,7 @@ export function Sidebar() {
 
       {/* Logout */}
       <div className="p-4 border-t border-white rounded-l-4xl">
-        <button 
+        <button
           onClick={handleLogout}
           className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors text-sm"
         >
