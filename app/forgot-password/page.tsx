@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      const response = await forgotPassword({ email });
+      const response = await forgotPassword({ identifier: email });
 
       if (response.success) {
         toast.success(response.message || "Password reset email sent successfully");
@@ -108,7 +108,7 @@ export default function ForgotPasswordPage() {
                   Sending...
                 </>
               ) : (
-                "Send Reset Link"
+                "Send Reset Code"
               )}
             </Button>
           </form>
