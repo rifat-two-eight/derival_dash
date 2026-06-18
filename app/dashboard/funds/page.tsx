@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  DollarSign, 
-  Clock, 
-  TrendingUp, 
-  ChevronLeft, 
+import {
+  DollarSign,
+  Clock,
+  TrendingUp,
+  ChevronLeft,
   ChevronRight,
   Search,
   Download,
@@ -89,21 +89,21 @@ export default function FundsPage() {
     <div className="space-y-6">
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard 
-          title="Total Funds" 
-          value={`$${summary?.totalFunds?.toLocaleString() || 0}`} 
+        <StatCard
+          title="Total Funds"
+          value={`$${summary?.totalFunds?.toLocaleString() || 0}`}
           icon={<DollarSign className="w-5 h-5 text-emerald-600" />}
           color="emerald"
         />
-        <StatCard 
-          title="Pending Funds" 
-          value={`$${summary?.totalPending?.toLocaleString() || 0}`} 
+        <StatCard
+          title="Pending Funds"
+          value={`$${summary?.totalPending?.toLocaleString() || 0}`}
           icon={<Clock className="w-5 h-5 text-orange-500" />}
           color="orange"
         />
-        <StatCard 
-          title="Monthly Inflow" 
-          value={`$${summary?.monthlyInflow?.toLocaleString() || 0}`} 
+        <StatCard
+          title="Monthly Inflow"
+          value={`$${summary?.monthlyInflow?.toLocaleString() || 0}`}
           icon={<TrendingUp className="w-5 h-5 text-indigo-600" />}
           color="indigo"
         />
@@ -113,15 +113,14 @@ export default function FundsPage() {
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/50">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100">
-            {["Group Funds", "Turns Oversight"].map((tab) => (
+            {["Group Funds"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  activeTab === tab
+                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab
                     ? "bg-[#1A2279] text-white shadow-md shadow-indigo-100"
                     : "text-gray-400 hover:text-gray-600"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -179,11 +178,10 @@ export default function FundsPage() {
                         ${item.distributed?.toLocaleString()}
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap text-center">
-                        <span className={`px-3 py-1 text-[10px] font-bold rounded-full capitalize ${
-                          item.status === "active" ? "bg-emerald-50 text-emerald-600" : 
-                          item.status === "upcoming" ? "bg-orange-50 text-orange-600" :
-                          "bg-red-50 text-red-600"
-                        }`}>
+                        <span className={`px-3 py-1 text-[10px] font-bold rounded-full capitalize ${item.status === "active" ? "bg-emerald-50 text-emerald-600" :
+                            item.status === "upcoming" ? "bg-orange-50 text-orange-600" :
+                              "bg-red-50 text-red-600"
+                          }`}>
                           {item.status}
                         </span>
                       </td>
@@ -250,11 +248,10 @@ export default function FundsPage() {
                             <span className="text-[8px] text-red-400 font-bold">KYC/Flagged</span>
                           </div>
                         ) : (
-                          <span className={`px-3 py-1 text-[10px] font-bold rounded-full capitalize ${
-                            turn.status === "PAID" ? "bg-emerald-50 text-emerald-600" : 
-                            turn.status === "PENDING" ? "bg-blue-50 text-blue-600" :
-                            "bg-gray-50 text-gray-600"
-                          }`}>
+                          <span className={`px-3 py-1 text-[10px] font-bold rounded-full capitalize ${turn.status === "PAID" ? "bg-emerald-50 text-emerald-600" :
+                              turn.status === "PENDING" ? "bg-blue-50 text-blue-600" :
+                                "bg-gray-50 text-gray-600"
+                            }`}>
                             {turn.status}
                           </span>
                         )}
@@ -277,7 +274,7 @@ export default function FundsPage() {
         {meta.totalPage > 1 && (
           <div className="flex items-center justify-end px-6 py-6 border-t border-gray-50 mt-4">
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
@@ -289,17 +286,16 @@ export default function FundsPage() {
                   <button
                     key={p}
                     onClick={() => setPage(p)}
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
-                      page === p
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${page === p
                         ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100"
                         : "text-gray-500 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     {p.toString().padStart(2, "0")}
                   </button>
                 ))}
               </div>
-              <button 
+              <button
                 onClick={() => setPage(p => Math.min(meta.totalPage, p + 1))}
                 disabled={page === meta.totalPage}
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
