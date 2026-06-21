@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Search,
   MoreHorizontal,
-  Download,
   ChevronLeft,
   ChevronRight,
   Loader2
@@ -52,18 +51,18 @@ export default function UsersPage() {
       const response = await getUsers(params);
       if (response.success) {
         const flattenedUsers = response.data.data.map((item: any) => ({
-          ...item._doc,
-          fullName: item.fullName || `${item._doc.firstName} ${item._doc.lastName}`,
+          ...item,
+          fullName: item.fullName || `${item.firstName} ${item.lastName}`,
         }));
         setUsers(flattenedUsers);
         setMeta(response.data.meta);
 
         // Stats calculation from flattened users
         setStats({
-          total: response.data.meta.total,
-          active: flattenedUsers.filter((u: User) => u.status === "active").length,
-          pending: flattenedUsers.filter((u: User) => u.status === "pending").length,
-          suspended: flattenedUsers.filter((u: User) => u.status === "suspended").length,
+          total: response.data.totalUsers,
+          active: response.data.activeUsers,
+          pending: response.data.pendingUsers,
+          suspended: response.data.suspendedUsers,
         });
       }
     } catch (error: any) {
@@ -154,10 +153,7 @@ export default function UsersPage() {
                 {tab}
               </button>
             ))}
-            <button className="flex items-center gap-2 px-4 py-2 bg-[#1A2279] text-white rounded-lg text-sm font-medium hover:bg-indigo-900 transition-all shadow-md shadow-indigo-100 ml-2">
-              <Download className="w-4 h-4" />
-              <span>Export</span>
-            </button>
+
           </div>
         </div>
 
@@ -171,11 +167,11 @@ export default function UsersPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-y border-gray-100">
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">User</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Contact</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Security</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Status</th>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Actions</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">User</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">Contact</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">Security</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -188,19 +184,33 @@ export default function UsersPage() {
               ) : (
                 users.map((user) => (
                   <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-5 whitespace-nowrap text-center">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{user.fullName}</p>
-                        <p className="text-[10px] text-gray-400">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                    <td className="px-6 py-5 whitespace-nowrap text-left">
+                      <div className="flex items-center gap-3">
+                        {user.profileImage ? (
+                          <img 
+                            src={user.profileImage} 
+                            alt={user.fullName} 
+                            className="w-10 h-10 rounded-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).src = ''; }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-[#1A2279] flex items-center justify-center text-white font-bold text-sm">
+                            {user.fullName.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">{user.fullName}</p>
+                          <p className="text-[10px] text-gray-400">Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                    <td className="px-6 py-5 whitespace-nowrap text-left">
                       <div>
                         <p className="text-xs text-gray-600">{user.email}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{user.phone}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{user.phone || '-'}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                    <td className="px-6 py-5 whitespace-nowrap text-left">
                       <div>
                         <p className="text-xs text-gray-600 font-medium">Attempts: {user.failedLoginAttempts || 0}</p>
                         {user.lockoutUntil && (
@@ -211,7 +221,7 @@ export default function UsersPage() {
                         <p className="text-[10px] text-gray-400 mt-1 capitalize">{user.role}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-5 whitespace-nowrap text-center">
+                    <td className="px-6 py-5 whitespace-nowrap text-left">
                       <span className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${user.status === "active" ? "bg-emerald-50 text-emerald-600" :
                           user.status === "suspended" ? "bg-red-50 text-red-600" :
                             "bg-orange-50 text-orange-600"
@@ -219,7 +229,7 @@ export default function UsersPage() {
                         {user.status}
                       </span>
                     </td>
-                    <td className="px-6 py-5 whitespace-nowrap text-center relative">
+                    <td className="px-6 py-5 whitespace-nowrap text-left relative">
                       <button
                         onClick={() => setOpenMenuId(openMenuId === user._id ? null : user._id)}
                         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors"
@@ -243,7 +253,7 @@ export default function UsersPage() {
                             )}
                             {user.status === "active" && (
                               <button
-                                className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors capitalize"
                                 onClick={() => handleStatusUpdate(user._id, "suspended")}
                               >
                                 Suspend
@@ -251,7 +261,7 @@ export default function UsersPage() {
                             )}
                             {user.status === "suspended" && (
                               <button
-                                className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                className="w-full px-4 py-2 text-left text-sm text-emerald-600 hover:bg-emerald-50 transition-colors capitalize"
                                 onClick={() => handleStatusUpdate(user._id, "active")}
                               >
                                 Active
@@ -260,13 +270,13 @@ export default function UsersPage() {
                             {user.status === "pending" && (
                               <>
                                 <button
-                                  className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                  className="w-full px-4 py-2 text-left text-sm text-emerald-600 hover:bg-emerald-50 font-bold transition-colors capitalize"
                                   onClick={() => handleStatusUpdate(user._id, "active")}
                                 >
-                                  Active
+                                  Approve
                                 </button>
                                 <button
-                                  className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors capitalize"
+                                  className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors capitalize"
                                   onClick={() => handleStatusUpdate(user._id, "suspended")}
                                 >
                                   Suspend

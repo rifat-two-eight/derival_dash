@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   Search,
   MoreHorizontal,
-  Download,
   ChevronLeft,
   ChevronRight,
   AlertCircle,
@@ -222,13 +221,7 @@ export default function PaymentsPage() {
         </div>
       </div>
 
-      {/* Bottom Export Button */}
-      <div className="flex justify-end mt-8">
-        <button className="bg-[#1A2279] text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-indigo-900 transition-all shadow-lg shadow-indigo-100">
-          <Download className="w-4 h-4" />
-          <span>Export Report</span>
-        </button>
-      </div>
+
     </div>
   );
 }

@@ -1,257 +1,262 @@
 {
     "success": true,
-    "message": "Audit logs retrieved successfully",
+    "message": "Groups retrieved successfully",
     "data": {
         "data": [
             {
-                "_id": "6a05175cfe1b191087af544c",
-                "entityType": "user",
-                "entityId": "6a0516ecfe1b191087af539c",
-                "action": "admin_action",
-                "metadata": {
-                    "action": "FORGOT_PASSWORD_OTP_SENT",
-                    "channel": "EMAIL_AND_SMS"
+                "_id": "6a346a743a0b40eaa75eacfb",
+                "name": "create",
+                "description": "create",
+                "createdBy": {
+                    "_id": "69ed24b486fa349c89af25b3",
+                    "email": "tapif36813@4heats.com",
+                    "firstName": "John",
+                    "lastName": "Doe"
                 },
-                "createdAt": "2026-05-14T00:29:16.113Z"
+                "contributionAmount": 1000,
+                "contributionFrequency": "weekly",
+                "totalMembers": 5,
+                "currentMembers": 1,
+                "inviteCode": "N3ON4T",
+                "poolAmount": 0,
+                "totalCycles": 2,
+                "status": "upcoming",
+                "isDeleted": false,
+                "isMock": false,
+                "creatorCommissionPercent": 0,
+                "isAdminCreated": true,
+                "createdAt": "2026-06-18T22:00:20.452Z",
+                "updatedAt": "2026-06-18T22:00:20.452Z"
             },
             {
-                "_id": "6a0500a35039e69579a9816d",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "subscription_expiry",
-                "metadata": {
-                    "subscriptionId": "sub_1TWlacA8YgpuhNcIpgdH3OJr"
+                "_id": "6a051a435dd2c68f807db534",
+                "name": "sdfsd",
+                "description": "dfsdfds",
+                "createdBy": {
+                    "_id": "6a0516ecfe1b191087af539c",
+                    "firstName": "sfsd",
+                    "lastName": "sfdfs",
+                    "email": "mocehox410@gcervera.com"
                 },
-                "createdAt": "2026-05-13T22:52:19.750Z"
+                "contributionAmount": 500,
+                "contributionFrequency": "weekly",
+                "totalMembers": 10,
+                "currentMembers": 1,
+                "inviteCode": "L312KK",
+                "poolAmount": 0,
+                "totalCycles": 2,
+                "status": "upcoming",
+                "groupPhoto": "http://10.10.7.12:5000/uploads/groups/4vsugvoohlo-1778719295931-1018-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "creatorCommissionPercent": 0,
+                "createdAt": "2026-05-14T00:41:39.997Z",
+                "updatedAt": "2026-05-14T00:41:39.997Z"
             },
             {
-                "_id": "6a0500a35039e69579a98167",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "membership_cancel",
-                "metadata": {
-                    "immediate": true
+                "_id": "6a0519cd5dd2c68f807db4f2",
+                "name": "sdfsdfsdf",
+                "description": "sdsffds",
+                "createdBy": {
+                    "_id": "6a0516ecfe1b191087af539c",
+                    "firstName": "sfsd",
+                    "lastName": "sfdfs",
+                    "email": "mocehox410@gcervera.com"
                 },
-                "createdAt": "2026-05-13T22:52:19.369Z"
+                "contributionAmount": 500,
+                "contributionFrequency": "monthly",
+                "totalMembers": 10,
+                "currentMembers": 1,
+                "inviteCode": "EV2PQU",
+                "poolAmount": 0,
+                "totalCycles": 2,
+                "status": "upcoming",
+                "groupPhoto": "http://10.10.7.12:5000/uploads/groups/ie8n2a4t89j-1778719181363-1013-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "creatorCommissionPercent": 0,
+                "createdAt": "2026-05-14T00:39:41.876Z",
+                "updatedAt": "2026-05-14T00:39:41.876Z"
             },
             {
-                "_id": "6a04fe80260be61532a47450",
-                "entityType": "user",
-                "entityId": "6a04f7bfccd638bb9a349aad",
-                "action": "admin_action",
-                "metadata": {
-                    "action": "FORGOT_PASSWORD_OTP_SENT",
-                    "channel": "EMAIL_AND_SMS"
+                "_id": "69fbc4744bd0f942d16ae4aa",
+                "name": "sdfssa",
+                "description": "fssdfs sfsfddf",
+                "createdBy": {
+                    "_id": "69fbbd4cdd3a3f78c1bea376",
+                    "firstName": "sakib",
+                    "lastName": "al",
+                    "email": "mameb91690@kynninc.com"
                 },
-                "createdAt": "2026-05-13T22:43:12.581Z"
+                "contributionAmount": 5000,
+                "contributionFrequency": "weekly",
+                "totalMembers": 10,
+                "currentMembers": 1,
+                "inviteCode": "CLMO0C",
+                "poolAmount": 0,
+                "totalCycles": 4,
+                "status": "upcoming",
+                "groupPhoto": "http://10.10.7.12:5000/uploads/groups/agt7wmnk89n-1778107507484-1000034063-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-06T22:45:08.052Z",
+                "updatedAt": "2026-05-06T22:45:08.052Z"
             },
             {
-                "_id": "6a03bf254da57ce651aeef12",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "subscription_expiry",
-                "metadata": {
-                    "subscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                "_id": "69fbad0d1cf1a31c28b1b6bb",
+                "name": "rtyt",
+                "description": "ghhgf",
+                "createdBy": {
+                    "_id": "69fba537b7470ab87d693fbc",
+                    "firstName": "Imran",
+                    "lastName": "Islam",
+                    "email": "wecen59562@lohinja.com"
                 },
-                "createdAt": "2026-05-13T00:00:37.930Z"
+                "contributionAmount": 5000,
+                "contributionFrequency": "weekly",
+                "totalMembers": 10,
+                "currentMembers": 1,
+                "inviteCode": "KH3WQJ",
+                "poolAmount": 0,
+                "totalCycles": 8,
+                "status": "upcoming",
+                "groupPhoto": "http://10.10.7.12:5000/uploads/groups/zsy7zyg516o-1778101514894-1000034074-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-06T21:05:17.722Z",
+                "updatedAt": "2026-05-06T21:05:17.722Z"
             },
             {
-                "_id": "6a03bf254da57ce651aeef0c",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "membership_cancel",
-                "metadata": {
-                    "immediate": true
+                "_id": "69fa5fce24ab30b56123608a",
+                "name": "hchc",
+                "description": "ucufuc",
+                "createdBy": {
+                    "_id": "69fa5231355e9aa06585afbe",
+                    "email": "bajosi2951@kynninc.com",
+                    "firstName": "sahin",
+                    "lastName": "PoolPay"
                 },
-                "createdAt": "2026-05-13T00:00:37.617Z"
+                "contributionAmount": 100,
+                "contributionFrequency": "monthly",
+                "totalMembers": 10,
+                "currentMembers": 2,
+                "startDate": "2026-05-05T21:25:04.089Z",
+                "inviteCode": "HWRLPR",
+                "poolAmount": 0,
+                "totalCycles": 4,
+                "status": "active",
+                "groupPhoto": "http://10.10.7.12:5000/uploads/groups/6axlq9r81w3-1778016205204-1000034074-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-05T21:23:26.599Z",
+                "updatedAt": "2026-05-05T21:25:04.089Z"
             },
             {
-                "_id": "6a03be92a2ac08963d04926f",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "membership_cancel",
-                "metadata": {
-                    "stripeSubscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                "_id": "69fa4bae97d4d8c9ed53414d",
+                "name": "Et illum quae eu vo",
+                "description": "Omnis animi neque v",
+                "createdBy": {
+                    "_id": "69ed24b486fa349c89af25b3",
+                    "email": "tapif36813@4heats.com",
+                    "firstName": "John",
+                    "lastName": "Doe"
                 },
-                "createdAt": "2026-05-12T23:58:10.262Z"
+                "contributionAmount": 1000,
+                "contributionFrequency": "yearly",
+                "totalMembers": 5,
+                "currentMembers": 1,
+                "inviteCode": "COEAL4",
+                "poolAmount": 0,
+                "totalCycles": 2,
+                "status": "upcoming",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-05T19:57:34.149Z",
+                "updatedAt": "2026-05-05T19:57:34.149Z"
             },
             {
-                "_id": "6a03be6ca2ac08963d049238",
-                "entityType": "user",
-                "entityId": "69ebc7ff51e8d1122ff14502",
-                "action": "membership_cancel",
-                "metadata": {
-                    "stripeSubscriptionId": "sub_1TWPVUA8YgpuhNcIzul1A0CG"
+                "_id": "69fa4a2e97d4d8c9ed533fcf",
+                "name": "Consequatur Irure v",
+                "description": "Dolores eos odit ut",
+                "createdBy": {
+                    "_id": "69ed24b486fa349c89af25b3",
+                    "email": "tapif36813@4heats.com",
+                    "firstName": "John",
+                    "lastName": "Doe"
                 },
-                "createdAt": "2026-05-12T23:57:32.921Z"
+                "contributionAmount": 1000,
+                "contributionFrequency": "monthly",
+                "totalMembers": 5,
+                "currentMembers": 1,
+                "inviteCode": "EAP4MO",
+                "poolAmount": 0,
+                "totalCycles": 2,
+                "status": "upcoming",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-05T19:51:10.611Z",
+                "updatedAt": "2026-05-05T19:51:10.611Z"
             },
             {
-                "_id": "6a03b3f07e337c8f8880018c",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
+                "_id": "69fa46c997d4d8c9ed533c96",
+                "name": "adhkj",
+                "description": "hjhdahdsad",
+                "createdBy": {
+                    "_id": "69fa42573f3d79274d0249b2",
+                    "email": "conim22095@kynninc.com",
+                    "firstName": "name",
+                    "lastName": "PoolPay"
                 },
-                "createdAt": "2026-05-12T23:12:48.436Z"
+                "contributionAmount": 100,
+                "contributionFrequency": "monthly",
+                "totalMembers": 10,
+                "currentMembers": 2,
+                "startDate": "2026-05-05T19:47:56.737Z",
+                "inviteCode": "APAI9Q",
+                "poolAmount": 0,
+                "totalCycles": 4,
+                "status": "active",
+                "groupPhoto": "https://res.cloudinary.com/dlgliabvj/image/upload/v1778009812/groups/0857g6ozt0gv-1778009797690-1000034058-jpg.jpg",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-05T19:36:41.619Z",
+                "updatedAt": "2026-05-05T19:47:56.738Z"
             },
             {
-                "_id": "6a03b3eb7e337c8f88800188",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
+                "_id": "69f92206fe6a55ba054acd1a",
+                "name": "ihb",
+                "description": "iibxekvexecobe",
+                "createdBy": {
+                    "_id": "69ebc7ff51e8d1122ff14502",
+                    "email": "yexox34077@4heats.com",
+                    "firstName": "John",
+                    "lastName": "Doe"
                 },
-                "createdAt": "2026-05-12T23:12:43.250Z"
-            },
-            {
-                "_id": "6a03b3eb7e337c8f88800186",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:43.015Z"
-            },
-            {
-                "_id": "6a03b3ea7e337c8f88800184",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:42.931Z"
-            },
-            {
-                "_id": "6a03b3ea7e337c8f88800182",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:42.771Z"
-            },
-            {
-                "_id": "6a03b3ea7e337c8f88800180",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:42.615Z"
-            },
-            {
-                "_id": "6a03b3ea7e337c8f8880017e",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:42.545Z"
-            },
-            {
-                "_id": "6a03b3ea7e337c8f8880017c",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:42.397Z"
-            },
-            {
-                "_id": "6a03b3d27e337c8f8880017a",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:18.854Z"
-            },
-            {
-                "_id": "6a03b3d27e337c8f88800178",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:18.799Z"
-            },
-            {
-                "_id": "6a03b3d27e337c8f88800176",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:18.477Z"
-            },
-            {
-                "_id": "6a03b3d27e337c8f88800174",
-                "entityType": "system",
-                "entityId": "webhook",
-                "action": "webhook_rejected",
-                "metadata": {
-                    "error": "Stripe: `createNodeCryptoProvider()` is not available in non-Node environments. Please use `createSubtleCryptoProvider()` instead.",
-                    "signature": true
-                },
-                "createdAt": "2026-05-12T23:12:18.295Z"
-            },
-            {
-                "_id": "69fe79023d518e73761a455c",
-                "entityType": "turn",
-                "entityId": "69f10cd812f3274bd66d4ee3",
-                "action": "manual_review_escalated",
-                "metadata": {
-                    "reason": "Transfer unverified"
-                },
-                "createdAt": "2026-05-09T00:00:02.289Z"
-            },
-            {
-                "_id": "69fe79013d518e73761a454d",
-                "entityType": "turn",
-                "entityId": "69f108f912f3274bd66d4bc9",
-                "action": "manual_review_escalated",
-                "metadata": {
-                    "reason": "Transfer unverified"
-                },
-                "createdAt": "2026-05-09T00:00:01.848Z"
-            },
-            {
-                "_id": "69fe79013d518e73761a4540",
-                "entityType": "turn",
-                "entityId": "69efe68b4649ba8170cdd628",
-                "action": "manual_review_escalated",
-                "metadata": {
-                    "reason": "Transfer unverified"
-                },
-                "createdAt": "2026-05-09T00:00:01.414Z"
+                "contributionAmount": 500,
+                "contributionFrequency": "monthly",
+                "totalMembers": 10,
+                "currentMembers": 1,
+                "startDate": "2026-05-04T23:40:20.555Z",
+                "inviteCode": "BMN9KN",
+                "poolAmount": 525,
+                "totalCycles": 2,
+                "status": "active",
+                "groupPhoto": "https://res.cloudinary.com/dlgliabvj/image/upload/v1777934862/groups/nunkr0k74pr-1777934850354-1000010481-png.png",
+                "isDeleted": false,
+                "isMock": false,
+                "createdAt": "2026-05-04T22:47:34.842Z",
+                "updatedAt": "2026-05-11T16:16:06.068Z"
             }
         ],
         "meta": {
             "page": 1,
-            "limit": 50,
-            "total": 23
-        }
+            "limit": 10,
+            "total": 21,
+            "totalPage": 3
+        },
+        "totalGroups": 21,
+        "activeGroups": 10,
+        "upcomingGroups": 11,
+        "totalMembers": 9
     }
 }

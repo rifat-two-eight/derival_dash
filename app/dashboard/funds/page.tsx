@@ -8,7 +8,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  Download,
   Loader2,
   AlertCircle,
   ArrowRight,
@@ -126,10 +125,7 @@ export default function FundsPage() {
               </button>
             ))}
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">
-            <Download className="w-4 h-4" />
-            <span>Export {activeTab}</span>
-          </button>
+
         </div>
 
         {/* Table Content */}

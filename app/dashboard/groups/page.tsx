@@ -10,6 +10,7 @@ import {
   Calendar,
   X,
   ChevronLeft,
+  ChevronRight,
   ArrowRight,
   CheckCircle2,
   Loader2
@@ -24,14 +25,15 @@ interface Group {
   description: string;
   createdBy: {
     _id: string;
-    fullName: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
   };
   contributionAmount: number;
   contributionFrequency: string;
   totalMembers: number;
   currentMembers: number;
-  startDate: string;
+  startDate?: string;
   inviteCode: string;
   poolAmount: number;
   status: string;
@@ -49,7 +51,8 @@ export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [meta, setMeta] = useState({ total: 0 });
+  const [meta, setMeta] = useState({ page: 1, limit: 9, total: 0, totalPage: 1 });
+  const [stats, setStats] = useState({ totalGroups: 0, activeGroups: 0, upcomingGroups: 0, totalMembers: 0 });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,12 +66,23 @@ export default function GroupsPage() {
 
   useEffect(() => {
     fetchGroups();
-  }, [activeTab, searchQuery]);
+  }, [activeTab, searchQuery, meta.page, meta.limit]);
+
+  const handlePageChange = (newPage: number) => {
+    setMeta(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setMeta(prev => ({ ...prev, limit: newLimit, page: 1 }));
+  };
 
   const fetchGroups = async () => {
     setIsLoading(true);
     try {
-      const params: any = {};
+      const params: any = {
+        page: meta.page,
+        limit: meta.limit
+      };
       if (activeTab !== "All") params.status = activeTab.toLowerCase();
       if (searchQuery) params.search = searchQuery;
 
@@ -76,6 +90,12 @@ export default function GroupsPage() {
       if (response.success) {
         setGroups(response.data.data);
         setMeta(response.data.meta);
+        setStats({
+          totalGroups: response.data.totalGroups,
+          activeGroups: response.data.activeGroups,
+          upcomingGroups: response.data.upcomingGroups,
+          totalMembers: response.data.totalMembers
+        });
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to fetch groups");
@@ -147,13 +167,6 @@ export default function GroupsPage() {
     }
   };
 
-  const stats = {
-    total: meta.total,
-    active: groups.filter(g => g.status === 'active').length,
-    Upcoming: groups.filter(g => g.status === 'upcoming').length,
-    totalMembers: groups.reduce((acc, curr) => acc + curr.currentMembers, 0)
-  };
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -169,9 +182,9 @@ export default function GroupsPage() {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Groups" value={stats.total} color="indigo" />
-        <StatCard title="Active" value={stats.active} color="emerald" />
-        <StatCard title="Upcoming" value={stats.Upcoming} color="orange" />
+        <StatCard title="Total Groups" value={stats.totalGroups} color="indigo" />
+        <StatCard title="Active" value={stats.activeGroups} color="emerald" />
+        <StatCard title="Upcoming" value={stats.upcomingGroups} color="orange" />
         <StatCard title="Total Members" value={stats.totalMembers} color="indigo" />
       </div>
 
@@ -188,7 +201,17 @@ export default function GroupsPage() {
               className="w-full pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A2279]/10 focus:border-[#1A2279] transition-all"
             />
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto">
+          <div className="flex items-center gap-3 overflow-x-auto">
+            <select
+              value={meta.limit}
+              onChange={(e) => handleLimitChange(Number(e.target.value))}
+              className="px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#1A2279]/10 focus:border-[#1A2279] transition-all cursor-pointer"
+            >
+              <option value={3}>3 / page</option>
+              <option value={6}>6 / page</option>
+              <option value={9}>9 / page</option>
+              <option value={12}>12 / page</option>
+            </select>
             {["All", "Active", "Upcoming", "Completed"].map((tab) => (
               <button
                 key={tab}
@@ -213,15 +236,68 @@ export default function GroupsPage() {
           <p className="text-gray-500 font-medium">Loading groups...</p>
         </div>
       ) : groups.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groups.map((group) => (
-            <GroupCard 
-              key={group._id} 
-              group={group} 
-              onClick={() => handleViewDetails(group._id)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {groups.map((group) => (
+              <GroupCard 
+                key={group._id} 
+                group={group} 
+                onClick={() => handleViewDetails(group._id)}
+              />
+            ))}
+          </div>
+          
+          {/* Pagination */}
+          {meta.totalPage > 1 && (
+            <div className="flex items-center justify-end mt-6">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handlePageChange(Math.max(1, meta.page - 1))}
+                  disabled={meta.page === 1 || isLoading}
+                  className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, meta.totalPage) }, (_, i) => {
+                    let pageNum = i + 1;
+                    if (meta.totalPage > 5) {
+                      if (meta.page <= 3) {
+                        pageNum = i + 1;
+                      } else if (meta.page >= meta.totalPage - 2) {
+                        pageNum = meta.totalPage - 4 + i;
+                      } else {
+                        pageNum = meta.page - 2 + i;
+                      }
+                    }
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        disabled={isLoading}
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
+                          meta.page === pageNum
+                            ? "bg-[#1A2279] text-white shadow-lg shadow-indigo-100"
+                            : "text-gray-500 hover:bg-gray-50"
+                        }`}
+                      >
+                        {pageNum.toString().padStart(2, "0")}
+                      </button>
+                    );
+                  })}
+                  {meta.totalPage > 5 && <span className="px-2 text-gray-400">...</span>}
+                </div>
+                <button
+                  onClick={() => handlePageChange(Math.min(meta.totalPage, meta.page + 1))}
+                  disabled={meta.page === meta.totalPage || isLoading}
+                  className="p-2 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100/50 shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4">
@@ -581,7 +657,11 @@ function GroupCard({ group, onClick }: { group: Group; onClick: () => void }) {
       <div className="pt-4 border-t border-gray-50">
         <div className="flex justify-between items-center mb-4">
           <span className="text-xs text-gray-400 font-medium">Admin:</span>
-          <span className="text-xs font-bold text-gray-700">{group.createdBy.fullName}</span>
+          <span className="text-xs font-bold text-gray-700">
+            {group.createdBy.firstName && group.createdBy.lastName 
+              ? `${group.createdBy.firstName} ${group.createdBy.lastName}` 
+              : group.createdBy.email}
+          </span>
         </div>
         <div className="space-y-2">
           <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
